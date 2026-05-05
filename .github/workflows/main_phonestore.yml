@@ -1,4 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+﻿# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: Build and deploy ASP.Net Core app to Azure Web App - phonestore
@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: "${{env.DOTNET_ROOT}}/myapp"
 
   deploy:
     runs-on: windows-latest
@@ -47,6 +47,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
+          path: ./publish-output
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -55,11 +56,22 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0FEB3D9E256948A4BE6555FD822BF13E }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2CECFED5D72D42BE91259708B97A2F67 }}
 
+      - name: Stop Azure Web App
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az webapp stop --name phonestore --resource-group hdkmall_group
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'phonestore'
           slot-name: 'Production'
-          package: .
-          
+          package: ./publish-output
+
+      - name: Start Azure Web App
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az webapp start --name phonestore --resource-group hdkmall_group
