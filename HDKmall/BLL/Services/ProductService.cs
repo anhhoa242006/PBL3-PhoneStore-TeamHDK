@@ -424,14 +424,21 @@ namespace HDKmall.BLL.Services
 
         public async Task<bool> DeleteProductAsync(int id)
         {
-            var product = _productRepository.GetById(id);
-            if (product == null) return false;
+            try
+            {
+                var product = _productRepository.GetById(id);
+                if (product == null) return false;
 
-            // Delete images from cloud (simplified)
-            // ... (optional logic for cleanup)
+                // Delete images from cloud (simplified)
+                // ... (optional logic for cleanup)
 
-            _productRepository.Delete(id);
-            return true;
+                _productRepository.Delete(id);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

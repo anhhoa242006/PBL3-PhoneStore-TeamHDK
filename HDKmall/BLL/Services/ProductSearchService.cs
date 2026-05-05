@@ -195,7 +195,28 @@ namespace HDKmall.BLL.Services
         {
             if (product == null) return null;
 
-            var allReviews = product.Versions.SelectMany(v => v.Reviews)
+            var versions = product.Versions?.ToList() ?? new List<ProductVersion>();
+            if (!versions.Any())
+            {
+                versions = new List<ProductVersion>
+                {
+                    new ProductVersion
+                    {
+                        Id = 0,
+                        ProductId = product.Id,
+                        Name = "Mặc định",
+                        BasePrice = product.Price,
+                        OriginalPrice = product.OriginalPrice,
+                        Description = product.Description,
+                        ImageUrl = product.ImageUrl,
+                        Variants = new List<ProductVariant>(),
+                        Specifications = new List<ProductSpecification>(),
+                        Reviews = new List<Review>()
+                    }
+                };
+            }
+
+            var allReviews = versions.SelectMany(v => v.Reviews)
                 .Where(r => r.Status == "Approved")
                 .ToList();
 
@@ -212,7 +233,7 @@ namespace HDKmall.BLL.Services
                 Category = product.Category,
                 BrandId = product.BrandId,
                 Brand = product.Brand,
-                Versions = product.Versions.Select(v => new ProductVersionVM
+                Versions = versions.Select(v => new ProductVersionVM
                 {
                     Id = v.Id,
                     Name = v.Name,
