@@ -11,15 +11,17 @@ namespace HDKmall.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IBrandService _brandService;
         private readonly IRecommendationService _recommendationService;
+        private readonly IBannerService _bannerService;
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
 
-        public HomeController(IProductSearchService searchService, ICategoryService categoryService, IBrandService brandService, IRecommendationService recommendationService, ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(IProductSearchService searchService, ICategoryService categoryService, IBrandService brandService, IRecommendationService recommendationService, IBannerService bannerService, ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _searchService = searchService;
             _categoryService = categoryService;
             _brandService = brandService;
             _recommendationService = recommendationService;
+            _bannerService = bannerService;
             _logger = logger;
             _context = context;
         }
@@ -39,6 +41,7 @@ namespace HDKmall.Controllers
             ViewBag.NewProducts = newProducts;
             ViewBag.RecentlyViewed = recentlyViewed;
             ViewBag.PersonalizedRecommendations = personalized;
+            ViewBag.Banners = _bannerService.GetAllBanners().Where(b => b.IsActive).ToList();
 
             if (User.Identity.IsAuthenticated)
             {

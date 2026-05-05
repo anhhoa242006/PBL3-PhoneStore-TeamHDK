@@ -64,6 +64,73 @@ namespace HDKmall.Controllers
         }
 
         [HttpGet]
+        public IActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+            return Challenge(properties, "Google");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded || result.Principal == null)
+            {
+                TempData["ErrorMessage"] = "Đăng nhập bằng Google thất bại. Vui lòng thử lại.";
+                return RedirectToAction("Login");
+            }
+
+            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+            var name = result.Principal.FindFirstValue(ClaimTypes.Name);
+            
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["ErrorMessage"] = "Không thể lấy thông tin Email từ tài khoản Google của bạn.";
+                return RedirectToAction("Login");
+            }
+
+            var user = _accountService.GetUserByEmail(email);
+
+            if (user == null)
+            {
+                // Tự động đăng ký nếu chưa có tài khoản
+                var registerSuccess = _accountService.RegisterUser(new RegisterVM
+                {
+                    FullName = name ?? "Người dùng Google",
+                    Email = email,
+                    Password = "GoogleLogin_TempPassword!123", // Mật khẩu giả
+                    ConfirmPassword = "GoogleLogin_TempPassword!123"
+                });
+
+                if (!registerSuccess)
+                {
+                    TempData["ErrorMessage"] = "Không thể tạo tài khoản từ Google. Email có thể đã tồn tại.";
+                    return RedirectToAction("Login");
+                }
+
+                user = _accountService.GetUserByEmail(email);
+            }
+            
+            if (user != null && !user.IsActive)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                TempData["ErrorMessage"] = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ hỗ trợ.";
+                return RedirectToAction("Login");
+            }
+
+            if (user != null)
+            {
+                await RefreshIdentityAsync(user.UserId, user.FullName, user.Email);
+                TempData["success"] = "Chào mừng " + user.FullName + " đã đăng nhập bằng Google!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["ErrorMessage"] = "Đã có lỗi xảy ra trong quá trình đăng nhập.";
+            return RedirectToAction("Login");
+        }
+
+        [HttpGet]
         public IActionResult Register() => View();
 
         [HttpPost]

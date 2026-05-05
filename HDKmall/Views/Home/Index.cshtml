@@ -28,57 +28,51 @@
 
 <!-- Hero Banner -->
 <div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-    </div>
-    <div class="carousel-inner rounded-4 shadow">
-        <div class="carousel-item active position-relative" style="height: 450px; background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);">
-            <div class="container h-100 position-relative z-1 d-flex align-items-center">
-                <div class="text-white w-50">
-                    <span class="badge bg-danger mb-3 fs-6">Sản phẩm hot</span>
-                    <h1 class="display-3 fw-bold mb-3">iPhone 16 Pro Max</h1>
-                    <p class="lead mb-4">Sức mạnh Titanium - Đột phá công nghệ với chip A18 Pro mạnh mẽ nhất hiện nay.</p>
-                    <a href="/Product" class="btn btn-light text-danger fw-bold rounded-pill px-4 py-2 fs-5">Khám phá ngay</a>
+    @if (ViewBag.Banners != null && ((IEnumerable<HDKmall.Models.Banner>)ViewBag.Banners).Any())
+    {
+        var banners = ((IEnumerable<HDKmall.Models.Banner>)ViewBag.Banners).ToList();
+        <div class="carousel-indicators">
+            @for (int i = 0; i < banners.Count; i++)
+            {
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></button>
+            }
+        </div>
+        <div class="carousel-inner rounded-4 shadow">
+            @for (int i = 0; i < banners.Count; i++)
+            {
+                var banner = banners[i];
+                <div class="carousel-item @(i == 0 ? "active" : "") position-relative" style="height: 450px;">
+                    <!-- The image itself as the background or embedded -->
+                    <img src="@banner.ImageUrl" class="d-block w-100 h-100" style="object-fit: cover;" alt="@banner.Title">
+                    
+                    @if (!string.IsNullOrEmpty(banner.LinkUrl))
+                    {
+                        <a href="@banner.LinkUrl" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 5;"></a>
+                    }
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" style="z-index: 10;">
+            <span class="carousel-control-prev-icon" aria-hidden="true" style="width: 3rem; height: 3rem;"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" style="z-index: 10;">
+            <span class="carousel-control-next-icon" aria-hidden="true" style="width: 3rem; height: 3rem;"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    }
+    else
+    {
+        <div class="carousel-inner rounded-4 shadow">
+            <div class="carousel-item active position-relative" style="height: 450px; background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);">
+                <div class="container h-100 position-relative z-1 d-flex align-items-center">
+                    <div class="text-white w-50">
+                        <h1 class="display-3 fw-bold mb-3">Chào mừng đến với HDKmall</h1>
+                    </div>
                 </div>
             </div>
-            <!-- Abstract background shape -->
-            <div class="position-absolute end-0 top-0 h-100 w-50" style="background: url('https://placehold.co/600x450/ffffff/ffffff') no-repeat center/cover; opacity: 0.1;"></div>
         </div>
-        <div class="carousel-item position-relative" style="height: 450px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-            <div class="container h-100 position-relative z-1 d-flex align-items-center">
-                <div class="text-white w-50">
-                    <span class="badge bg-info text-dark mb-3 fs-6">Hàng mới về</span>
-                    <h1 class="display-3 fw-bold mb-3">Galaxy S24 Ultra</h1>
-                    <p class="lead mb-4">Mở ra kỷ nguyên AI mới trên di động, hỗ trợ dịch trực tiếp, thông minh bất tận.</p>
-                    <a href="/Product" class="btn btn-light text-primary fw-bold rounded-pill px-4 py-2 fs-5">Khám phá ngay</a>
-                </div>
-            </div>
-            <!-- Abstract background shape -->
-            <div class="position-absolute end-0 top-0 h-100 w-50" style="background: url('https://placehold.co/600x450/ffffff/ffffff') no-repeat center/cover; opacity: 0.1;"></div>
-        </div>
-        <div class="carousel-item position-relative" style="height: 450px; background: linear-gradient(135deg, #111 0%, #333 100%);">
-            <div class="container h-100 position-relative z-1 d-flex align-items-center">
-                <div class="text-white w-50">
-                    <span class="badge bg-white text-dark mb-3 fs-6">Tin đồn HOT</span>
-                    <h1 class="display-3 fw-bold mb-3">MacBook Pro M4</h1>
-                    <p class="lead mb-4">Cấu hình khủng, màn hình đỉnh cao, thời lượng pin vượt trội cho mọi nhu cầu.</p>
-                    <a href="/Product" class="btn btn-light fw-bold text-dark rounded-pill px-4 py-2 fs-5">Khám phá ngay</a>
-                </div>
-            </div>
-            <!-- Abstract background shape -->
-            <div class="position-absolute end-0 top-0 h-100 w-50" style="background: url('https://placehold.co/600x450/ffffff/ffffff') no-repeat center/cover; opacity: 0.1;"></div>
-        </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true" style="width: 3rem; height: 3rem;"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true" style="width: 3rem; height: 3rem;"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
+    }
 </div>
 
 <!-- Categories -->
