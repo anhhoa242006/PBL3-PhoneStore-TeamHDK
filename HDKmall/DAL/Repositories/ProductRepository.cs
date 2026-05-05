@@ -79,10 +79,50 @@ namespace HDKmall.DAL.Repositories
 
         public void Delete(int id)
         {
-            var product = _context.Products.Find(id);
+            // Explicitly load the product with all its related entities that need to be deleted.
+            // This ensures EF Core's change tracker is aware of them, which is necessary if 
+            // database-level cascade delete is not fully configured or supported.
+            var product = _context.Products
+                .Include(p => p.Versions)
+                    .ThenInclude(v => v.Variants)
+                .Include(p => p.Versions)
+                    .ThenInclude(v => v.Specifications)
+                .Include(p => p.Versions)
+                    .ThenInclude(v => v.Reviews)
+                .Include(p => p.Images)
+                .FirstOrDefault(p => p.Id == id);
+
             if (product != null)
             {
+                var versionIds = product.Versions.Select(v => v.Id).ToList();
+                var variantIds = product.Versions.SelectMany(v => v.Variants).Select(vr => vr.Id).ToList();
+
+                // 1. Manually remove records from tables that typically don't have cascade delete 
+                // or might have complex relationships (Cart, Orders, Wishlist).
+                
+                // Cart Items
+                var cartItems = _context.CartItems
+                    .Where(ci => ci.ProductId == id || (ci.VariantId.HasValue && variantIds.Contains(ci.VariantId.Value)))
+                    .ToList();
+                if (cartItems.Any()) _context.CartItems.RemoveRange(cartItems);
+
+                // Order Details
+                var orderDetails = _context.OrderDetails
+                    .Where(od => od.ProductId == id || (od.ProductVariantId.HasValue && variantIds.Contains(od.ProductVariantId.Value)))
+                    .ToList();
+                if (orderDetails.Any()) _context.OrderDetails.RemoveRange(orderDetails);
+
+                // Wishlists
+                var wishlists = _context.Wishlists
+                    .Where(w => w.ProductId == id || (w.VersionId.HasValue && versionIds.Contains(w.VersionId.Value)))
+                    .ToList();
+                if (wishlists.Any()) _context.Wishlists.RemoveRange(wishlists);
+
+                // 2. Remove the Product. 
+                // Because we used .Include() for Versions, Images, etc., EF Core will 
+                // handle the deletion of those related records as well.
                 _context.Products.Remove(product);
+                
                 _context.SaveChanges();
             }
         }
