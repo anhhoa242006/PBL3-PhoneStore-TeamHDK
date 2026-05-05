@@ -45,7 +45,23 @@
 
                     <div class="mb-4">
                         <label asp-for="Title" class="form-label fw-semibold text-dark">Tiêu Đề Banner</label>
-                        <input asp-for="Title" class="form-control bg-light" id="bannerTitle" placeholder="Nhập tiêu đề banner..." />
+                        <input asp-for="Title" class="form-control bg-light" id="bannerTitle" placeholder="VD: iPhone 16 Pro Max" />
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold text-dark">Mô Tả Bổ Sung</label>
+                        <textarea asp-for="Description" class="form-control bg-light" id="bannerDescription" rows="2" placeholder="VD: Sức mạnh Titanium - Đột phá công nghệ..."></textarea>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="BadgeText" class="form-label fw-semibold text-dark">Nhãn (Badge)</label>
+                            <input asp-for="BadgeText" class="form-control bg-light" id="bannerBadge" placeholder="VD: Sản phẩm hot" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ButtonText" class="form-label fw-semibold text-dark">Chữ trên nút bấm</label>
+                            <input asp-for="ButtonText" class="form-control bg-light" id="bannerBtnText" placeholder="VD: Khám phá ngay" />
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -91,10 +107,15 @@
                         <span class="small">Chưa có ảnh</span>
                     </div>
                 </div>
-                <div class="mt-3 p-3 bg-light rounded-3">
-                    <div class="fw-bold text-dark mb-1" id="bannerPreviewTitle" style="font-size:15px;">(Tiêu đề banner)</div>
-                    <div class="text-muted small text-truncate" id="bannerPreviewLink">
-                        <i class="bi bi-link-45deg"></i> (Đường dẫn)
+                <div class="mt-3 p-3 bg-light rounded-3" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);">
+                    <span class="badge bg-danger mb-2" id="bannerPreviewBadge">@(Model?.BadgeText ?? "Nhãn")</span>
+                    <div class="fw-bold text-white mb-1" id="bannerPreviewTitle" style="font-size:18px;">@(Model?.Title ?? "(Tiêu đề banner)")</div>
+                    <div class="text-white-50 small mb-2" id="bannerPreviewDesc" style="font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        @(Model?.Description ?? "(Mô tả banner)")
+                    </div>
+                    <a href="#" class="btn btn-sm btn-light text-danger fw-bold rounded-pill px-3 py-1" id="bannerPreviewBtn" onclick="return false;">@(Model?.ButtonText ?? "Nút bấm")</a>
+                    <div class="text-white-50 small mt-2 text-truncate" id="bannerPreviewLink" style="font-size: 11px;">
+                        <i class="bi bi-link-45deg"></i> @(Model?.LinkUrl ?? "(Đường dẫn)")
                     </div>
                 </div>
                 <div class="mt-2 text-center">
@@ -112,10 +133,16 @@
         function updateBannerPreview() {
             const url = document.getElementById('bannerUrl').value;
             const title = document.getElementById('bannerTitle').value;
+            const desc = document.getElementById('bannerDescription').value;
+            const badgeText = document.getElementById('bannerBadge').value;
+            const btnText = document.getElementById('bannerBtnText').value;
             const link = document.getElementById('bannerLink').value;
             const isActive = document.getElementById('IsActive').checked;
 
             document.getElementById('bannerPreviewTitle').innerText = title || "(Tiêu đề banner)";
+            document.getElementById('bannerPreviewDesc').innerText = desc || "(Mô tả banner)";
+            document.getElementById('bannerPreviewBadge').innerText = badgeText || "Nhãn";
+            document.getElementById('bannerPreviewBtn').innerText = btnText || "Nút bấm";
             document.getElementById('bannerPreviewLink').innerHTML = `<i class="bi bi-link-45deg"></i> ${link || "(Đường dẫn)"}`;
 
             const badge = document.getElementById('previewStatusBadge');
@@ -137,6 +164,9 @@
 
         document.getElementById('bannerUrl').addEventListener('input', updateBannerPreview);
         document.getElementById('bannerTitle').addEventListener('input', updateBannerPreview);
+        document.getElementById('bannerDescription').addEventListener('input', updateBannerPreview);
+        document.getElementById('bannerBadge').addEventListener('input', updateBannerPreview);
+        document.getElementById('bannerBtnText').addEventListener('input', updateBannerPreview);
         document.getElementById('bannerLink').addEventListener('input', updateBannerPreview);
         document.getElementById('IsActive').addEventListener('change', updateBannerPreview);
 

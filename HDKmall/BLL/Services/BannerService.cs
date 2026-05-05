@@ -36,6 +36,9 @@ namespace HDKmall.BLL.Services
             {
                 existing.ImageUrl = banner.ImageUrl;
                 existing.Title = banner.Title;
+                existing.Description = banner.Description;
+                existing.BadgeText = banner.BadgeText;
+                existing.ButtonText = banner.ButtonText;
                 existing.LinkUrl = banner.LinkUrl;
                 existing.IsActive = banner.IsActive;
                 _bannerRepository.Update(existing);

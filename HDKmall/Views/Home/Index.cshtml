@@ -39,8 +39,7 @@
         };
         var textColors = new string[] { "text-white", "text-white", "text-white", "text-white" };
         var btnClasses = new string[] { "btn-light text-danger", "btn-light text-primary", "btn-light text-dark", "btn-light text-purple" };
-        var badgeClasses = new string[] { "bg-danger", "bg-info text-dark", "bg-white text-dark", "bg-warning text-dark" };
-        var badgeTexts = new string[] { "Sản phẩm hot", "Hàng mới về", "Tin đồn HOT", "Khuyến mãi" };
+        var defaultBadgeClasses = new string[] { "bg-danger", "bg-info text-dark", "bg-white text-dark", "bg-warning text-dark" };
 
         <div class="carousel-indicators">
             @for (int i = 0; i < banners.Count; i++)
@@ -56,12 +55,18 @@
                 <div class="carousel-item @(i == 0 ? "active" : "") position-relative" style="height: 450px; background: @gradients[cIdx];">
                     <div class="container h-100 position-relative z-1 d-flex align-items-center">
                         <div class="@textColors[cIdx] w-50 pe-4">
-                            <span class="badge @badgeClasses[cIdx] mb-3 fs-6">@badgeTexts[cIdx]</span>
+                            @if (!string.IsNullOrEmpty(banner.BadgeText))
+                            {
+                                <span class="badge @defaultBadgeClasses[cIdx] mb-3 fs-6">@banner.BadgeText</span>
+                            }
                             <h1 class="display-4 fw-bold mb-3">@(string.IsNullOrEmpty(banner.Title) ? "Khám phá ngay" : banner.Title)</h1>
-                            <p class="lead mb-4">Sản phẩm chính hãng với mức giá tốt nhất thị trường. Mua ngay hôm nay để nhận ưu đãi.</p>
+                            @if (!string.IsNullOrEmpty(banner.Description))
+                            {
+                                <p class="lead mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">@banner.Description</p>
+                            }
                             @if (!string.IsNullOrEmpty(banner.LinkUrl))
                             {
-                                <a href="@banner.LinkUrl" class="btn @btnClasses[cIdx] fw-bold rounded-pill px-4 py-2 fs-5">Khám phá ngay</a>
+                                <a href="@banner.LinkUrl" class="btn @btnClasses[cIdx] fw-bold rounded-pill px-4 py-2 fs-5">@(string.IsNullOrEmpty(banner.ButtonText) ? "Khám phá ngay" : banner.ButtonText)</a>
                             }
                         </div>
                         <div class="w-50 h-100 d-flex justify-content-center align-items-center py-3">
