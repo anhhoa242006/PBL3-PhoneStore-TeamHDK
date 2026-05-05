@@ -66,9 +66,15 @@
 
                     <div class="mb-4">
                         <label asp-for="LinkUrl" class="form-label fw-semibold text-dark">Đường Dẫn Khi Click</label>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <select id="linkSelector" class="form-select border-start-0 bg-light">
+                                <option value="">-- Tìm kiếm đường dẫn (Sản phẩm, Danh mục, Thương hiệu) --</option>
+                            </select>
+                        </div>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="bi bi-cursor text-muted"></i></span>
-                            <input asp-for="LinkUrl" class="form-control border-start-0 bg-light" id="bannerLink" placeholder="/san-pham/..." />
+                            <input asp-for="LinkUrl" class="form-control border-start-0 bg-light" id="bannerLink" placeholder="Hoặc nhập đường dẫn tùy chỉnh..." />
                         </div>
                     </div>
 
@@ -129,7 +135,40 @@
 </div>
 
 @section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        $(document).ready(function() {
+            // Khởi tạo Select2
+            $('#linkSelector').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: "-- Tìm kiếm đường dẫn --",
+                allowClear: true
+            });
+
+            // Gọi API lấy danh sách
+            $.ajax({
+                url: '/Admin/Banner/GetLinkOptions',
+                type: 'GET',
+                success: function(data) {
+                    var select = $('#linkSelector');
+                    $.each(data, function(index, item) {
+                        select.append(new Option(item.text, item.id, false, false));
+                    });
+                }
+            });
+
+            // Khi chọn một đường dẫn từ bảng, điền vào ô Input
+            $('#linkSelector').on('change', function() {
+                var selectedUrl = $(this).val();
+                if(selectedUrl) {
+                    $('#bannerLink').val(selectedUrl);
+                    updateBannerPreview();
+                }
+            });
+        });
+
         function updateBannerPreview() {
             const url = document.getElementById('bannerUrl').value;
             const title = document.getElementById('bannerTitle').value;

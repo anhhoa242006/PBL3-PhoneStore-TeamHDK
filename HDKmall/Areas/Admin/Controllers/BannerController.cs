@@ -2,6 +2,9 @@ using HDKmall.BLL.Interfaces;
 using HDKmall.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HDKmall.Areas.Admin.Controllers
 {
@@ -11,11 +14,22 @@ namespace HDKmall.Areas.Admin.Controllers
     {
         private readonly IBannerService _bannerService;
         private readonly IPhotoService _photoService;
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        private readonly IBrandService _brandService;
 
-        public BannerController(IBannerService bannerService, IPhotoService photoService)
+        public BannerController(
+            IBannerService bannerService, 
+            IPhotoService photoService,
+            IProductService productService,
+            ICategoryService categoryService,
+            IBrandService brandService)
         {
             _bannerService = bannerService;
             _photoService = photoService;
+            _productService = productService;
+            _categoryService = categoryService;
+            _brandService = brandService;
         }
 
         public IActionResult Index(string? q)
@@ -31,6 +45,29 @@ namespace HDKmall.Areas.Admin.Controllers
 
             ViewBag.Search = q;
             return View(banners);
+        }
+
+        [HttpGet]
+        public IActionResult GetLinkOptions()
+        {
+            var products = _productService.GetAllProducts()
+                .Select(p => new { id = $"/product/{p.Slug}", text = $"Sản phẩm: {p.Name}" })
+                .ToList();
+
+            var categories = _categoryService.GetAllCategories()
+                .Select(c => new { id = $"/Category?categoryId={c.Id}", text = $"Danh mục: {c.Name}" })
+                .ToList();
+
+            var brands = _brandService.GetAllBrands()
+                .Select(b => new { id = $"/Brand?brandId={b.Id}", text = $"Thương hiệu: {b.Name}" })
+                .ToList();
+
+            var results = new List<object>();
+            results.AddRange(products);
+            results.AddRange(categories);
+            results.AddRange(brands);
+
+            return Json(results);
         }
 
         public IActionResult Create()
