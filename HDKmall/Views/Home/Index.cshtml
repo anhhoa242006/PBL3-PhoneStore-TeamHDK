@@ -31,6 +31,17 @@
     @if (ViewBag.Banners != null && ((IEnumerable<HDKmall.Models.Banner>)ViewBag.Banners).Any())
     {
         var banners = ((IEnumerable<HDKmall.Models.Banner>)ViewBag.Banners).ToList();
+        var gradients = new string[] { 
+            "linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)", 
+            "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", 
+            "linear-gradient(135deg, #111 0%, #333 100%)",
+            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+        };
+        var textColors = new string[] { "text-white", "text-white", "text-white", "text-white" };
+        var btnClasses = new string[] { "btn-light text-danger", "btn-light text-primary", "btn-light text-dark", "btn-light text-purple" };
+        var badgeClasses = new string[] { "bg-danger", "bg-info text-dark", "bg-white text-dark", "bg-warning text-dark" };
+        var badgeTexts = new string[] { "Sản phẩm hot", "Hàng mới về", "Tin đồn HOT", "Khuyến mãi" };
+
         <div class="carousel-indicators">
             @for (int i = 0; i < banners.Count; i++)
             {
@@ -41,14 +52,24 @@
             @for (int i = 0; i < banners.Count; i++)
             {
                 var banner = banners[i];
-                <div class="carousel-item @(i == 0 ? "active" : "") position-relative" style="height: 450px;">
-                    <!-- The image itself as the background or embedded -->
-                    <img src="@banner.ImageUrl" class="d-block w-100 h-100" style="object-fit: cover;" alt="@banner.Title">
-                    
-                    @if (!string.IsNullOrEmpty(banner.LinkUrl))
-                    {
-                        <a href="@banner.LinkUrl" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 5;"></a>
-                    }
+                var cIdx = i % 4;
+                <div class="carousel-item @(i == 0 ? "active" : "") position-relative" style="height: 450px; background: @gradients[cIdx];">
+                    <div class="container h-100 position-relative z-1 d-flex align-items-center">
+                        <div class="@textColors[cIdx] w-50 pe-4">
+                            <span class="badge @badgeClasses[cIdx] mb-3 fs-6">@badgeTexts[cIdx]</span>
+                            <h1 class="display-4 fw-bold mb-3">@(string.IsNullOrEmpty(banner.Title) ? "Khám phá ngay" : banner.Title)</h1>
+                            <p class="lead mb-4">Sản phẩm chính hãng với mức giá tốt nhất thị trường. Mua ngay hôm nay để nhận ưu đãi.</p>
+                            @if (!string.IsNullOrEmpty(banner.LinkUrl))
+                            {
+                                <a href="@banner.LinkUrl" class="btn @btnClasses[cIdx] fw-bold rounded-pill px-4 py-2 fs-5">Khám phá ngay</a>
+                            }
+                        </div>
+                        <div class="w-50 h-100 d-flex justify-content-center align-items-center py-3">
+                            <img src="@banner.ImageUrl" class="img-fluid" style="max-height: 100%; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2));" alt="@banner.Title">
+                        </div>
+                    </div>
+                    <!-- Abstract background shape -->
+                    <div class="position-absolute end-0 top-0 h-100 w-50" style="background: url('https://placehold.co/600x450/ffffff/ffffff') no-repeat center/cover; opacity: 0.1;"></div>
                 </div>
             }
         </div>
