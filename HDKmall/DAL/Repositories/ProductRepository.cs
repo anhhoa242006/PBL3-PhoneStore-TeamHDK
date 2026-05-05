@@ -79,58 +79,9 @@ namespace HDKmall.DAL.Repositories
 
         public void Delete(int id)
         {
-            var product = _context.Products
-                .Include(p => p.Images)
-                .Include(p => p.Versions)
-                    .ThenInclude(v => v.Variants)
-                .Include(p => p.Versions)
-                    .ThenInclude(v => v.Specifications)
-                .Include(p => p.Versions)
-                    .ThenInclude(v => v.Reviews)
-                .FirstOrDefault(p => p.Id == id);
-
+            var product = _context.Products.Find(id);
             if (product != null)
             {
-                var versionIds = product.Versions.Select(v => v.Id).ToList();
-                var variantIds = product.Versions.SelectMany(v => v.Variants).Select(vr => vr.Id).ToList();
-
-                // Remove dependent records explicitly so deletes do not fail on FK restrictions.
-                var cartItems = _context.CartItems
-                    .Where(ci => ci.ProductId == id || (ci.VariantId.HasValue && variantIds.Contains(ci.VariantId.Value)))
-                    .ToList();
-                if (cartItems.Any()) _context.CartItems.RemoveRange(cartItems);
-
-                var orderDetails = _context.OrderDetails
-                    .Where(od => od.ProductId == id || (od.ProductVariantId.HasValue && variantIds.Contains(od.ProductVariantId.Value)))
-                    .ToList();
-                if (orderDetails.Any()) _context.OrderDetails.RemoveRange(orderDetails);
-
-                var wishlists = _context.Wishlists
-                    .Where(w => w.ProductId == id || (w.VersionId.HasValue && versionIds.Contains(w.VersionId.Value)))
-                    .ToList();
-                if (wishlists.Any()) _context.Wishlists.RemoveRange(wishlists);
-
-                var reviews = _context.Reviews
-                    .Where(r => versionIds.Contains(r.ProductVersionId))
-                    .ToList();
-                if (reviews.Any()) _context.Reviews.RemoveRange(reviews);
-
-                var variants = _context.ProductVariants
-                    .Where(v => versionIds.Contains(v.ProductVersionId))
-                    .ToList();
-                if (variants.Any()) _context.ProductVariants.RemoveRange(variants);
-
-                var specs = _context.ProductSpecifications
-                    .Where(s => versionIds.Contains(s.ProductVersionId))
-                    .ToList();
-                if (specs.Any()) _context.ProductSpecifications.RemoveRange(specs);
-
-                var images = _context.ProductImages.Where(i => i.ProductId == id).ToList();
-                if (images.Any()) _context.ProductImages.RemoveRange(images);
-
-                var versions = _context.ProductVersions.Where(v => v.ProductId == id).ToList();
-                if (versions.Any()) _context.ProductVersions.RemoveRange(versions);
-
                 _context.Products.Remove(product);
                 _context.SaveChanges();
             }
