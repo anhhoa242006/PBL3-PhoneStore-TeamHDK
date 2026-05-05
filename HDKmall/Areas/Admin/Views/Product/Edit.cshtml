@@ -78,11 +78,11 @@
                             </select>
                         </div>
 
-                        <div class="col-md-3" id="directPriceSection" style="display:none;">
+                        <div class="col-md-3" id="directPriceSection" style="@(Model.ProductType == ProductType.ColorsOnly ? "display:block;" : "display:none;")">
                             <label asp-for="Price" class="form-label fw-bold text-muted small">Giá bán (₫)</label>
                             <input asp-for="Price" class="form-control bg-light border-0 fw-bold text-danger" type="number" />
                         </div>
-                        <div class="col-md-3" id="directOriginalPriceSection" style="display:none;">
+                        <div class="col-md-3" id="directOriginalPriceSection" style="@(Model.ProductType == ProductType.ColorsOnly ? "display:block;" : "display:none;")">
                             <label asp-for="OriginalPrice" class="form-label fw-bold text-muted small">Giá gốc</label>
                             <input asp-for="OriginalPrice" class="form-control bg-light border-0" type="number" />
                         </div>
@@ -131,7 +131,7 @@
             </div>
 
             <!-- PHẦN 1: DUNG LƯỢNG -->
-            <div id="sectionVersions" style="display:none;">
+            <div id="sectionVersions" style="@(Model.ProductType == ProductType.HasVersions ? "display:block;" : "display:none;")">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold mb-0">Phiên bản dung lượng</h5>
                     <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" onclick="addVersion()">
@@ -198,7 +198,7 @@
             </div>
 
             <!-- PHẦN 2: CHỈ CÓ MÀU SẮC -->
-            <div id="sectionColors" style="display:none;">
+            <div id="sectionColors" style="@(Model.ProductType == ProductType.ColorsOnly ? "display:block;" : "display:none;")">
                 @* Hidden inputs for the default version — needed for proper update (avoid delete+recreate) *@
                 @if (Model.Versions != null && Model.Versions.Any())
                 {
@@ -291,14 +291,18 @@
             const directPrice      = document.getElementById('directPriceSection');
             const directOrig       = document.getElementById('directOriginalPriceSection');
 
-            sectionVersions.style.display = (val === '1') ? 'block' : 'none';
-            sectionColors.style.display   = (val === '2') ? 'block' : 'none';
-            directPrice.style.display     = (val === '2') ? 'block' : 'none';
-            directOrig.style.display      = (val === '2') ? 'block' : 'none';
+            // Handle both numeric string "1" and enum name "HasVersions"
+            const isHasVersions = (val === '1' || val === 'HasVersions');
+            const isColorsOnly  = (val === '2' || val === 'ColorsOnly');
+
+            sectionVersions.style.display = isHasVersions ? 'block' : 'none';
+            sectionColors.style.display   = isColorsOnly   ? 'block' : 'none';
+            directPrice.style.display     = isColorsOnly   ? 'block' : 'none';
+            directOrig.style.display      = isColorsOnly   ? 'block' : 'none';
 
             // Disable inputs in hidden sections to prevent form submission conflicts
-            toggleSectionInputs('sectionVersions', val === '1');
-            toggleSectionInputs('sectionColors', val === '2');
+            toggleSectionInputs('sectionVersions', isHasVersions);
+            toggleSectionInputs('sectionColors', isColorsOnly);
         }
 
         function toggleSectionInputs(sectionId, enabled) {

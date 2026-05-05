@@ -166,8 +166,8 @@
                                     </form>
                                 </td>
                                 <td class="px-4">
-                                    <div class="fw-medium small">@user.CreatedAt.ToString("dd/MM/yyyy")</div>
-                                    <div class="text-muted" style="font-size:11px;">@user.CreatedAt.ToString("HH:mm")</div>
+                                    <div class="fw-medium small">@user.CreatedAt?.ToString("dd/MM/yyyy")</div>
+                                    <div class="text-muted" style="font-size:11px;">@user.CreatedAt?.ToString("HH:mm")</div>
                                 </td>
                                 <td class="px-4 text-end">
                                     <div class="dropdown">

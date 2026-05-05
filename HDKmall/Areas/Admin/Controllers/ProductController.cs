@@ -37,15 +37,29 @@ namespace HDKmall.Areas.Admin.Controllers
             ViewBag.ActiveTab = "products";
             var productsQuery = _productService.GetAllProducts().ToList();
 
-            var productsVM = productsQuery.Select(p => new ProductListVM
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Price = p.Price,
-                ImageUrl = p.ImageUrl,
-                CategoryName = p.Category?.Name ?? p.CategoryId.ToString(),
-                BrandName = p.Brand?.Name,
-                Slug = p.Slug
+            var productsVM = productsQuery.Select(p => {
+                // Calculate a display price: for versioned products, use the minimum price among versions.
+                // If no versions or standard product, use the base Price.
+                decimal displayPrice = p.Price;
+                if (p.ProductType == 1 && p.Versions != null && p.Versions.Any())
+                {
+                    var validPrices = p.Versions.Where(v => v.BasePrice > 0).Select(v => v.BasePrice).ToList();
+                    if (validPrices.Any()) 
+                    {
+                        displayPrice = validPrices.Min();
+                    }
+                }
+
+                return new ProductListVM
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = displayPrice,
+                    ImageUrl = p.ImageUrl,
+                    CategoryName = p.Category?.Name ?? p.CategoryId.ToString(),
+                    BrandName = p.Brand?.Name,
+                    Slug = p.Slug
+                };
             }).ToList();
 
             if (!string.IsNullOrWhiteSpace(q))
