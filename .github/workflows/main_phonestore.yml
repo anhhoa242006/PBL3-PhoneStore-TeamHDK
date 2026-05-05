@@ -57,10 +57,7 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2CECFED5D72D42BE91259708B97A2F67 }}
 
       - name: Stop Azure Web App
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az webapp stop --name phonestore --resource-group hdkmall_group
+        run: az webapp stop --name phonestore --resource-group hdkmall_group
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -71,7 +68,5 @@ jobs:
           package: ./publish-output
 
       - name: Start Azure Web App
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az webapp start --name phonestore --resource-group hdkmall_group
+        run: az webapp start --name phonestore --resource-group hdkmall_group
+
