@@ -90,7 +90,8 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="confirmDelete(event, this);">
-                                        <button type="button" class="btn btn-sm btn-light text-danger border shadow-sm rounded-3" title="Xóa" onclick="confirmDelete(event, this.closest('form'));">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-light text-danger border shadow-sm rounded-3" title="Xóa">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
