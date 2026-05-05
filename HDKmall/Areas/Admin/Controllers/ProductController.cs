@@ -37,25 +37,21 @@ namespace HDKmall.Areas.Admin.Controllers
             ViewBag.ActiveTab = "products";
             var productsQuery = _productService.GetAllProducts().ToList();
 
-            var flatProducts = productsQuery.SelectMany(p => 
-                (p.Versions != null && p.Versions.Any() ? p.Versions.Select(v => (ProductVersion?)v) : new List<ProductVersion?> { (ProductVersion?)new ProductVersion { Name = "", BasePrice = p.Price, ImageUrl = p.ImageUrl } })
-                .Select(v => new ProductListVM
-                {
-                    Id = p.Id,
-                    Name = string.IsNullOrWhiteSpace(v.Name) ? p.Name : $"{p.Name} {v.Name}",
-                    Price = v.BasePrice > 0 ? v.BasePrice : p.Price,
-                    ImageUrl = v.ImageUrl ?? p.ImageUrl,
-                    CategoryName = p.Category?.Name ?? p.CategoryId.ToString(),
-                    BrandName = p.Brand?.Name,
-                    VersionId = v.Id,
-                    VersionName = v.Name
-                })
-            ).ToList();
+            var productsVM = productsQuery.Select(p => new ProductListVM
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl,
+                CategoryName = p.Category?.Name ?? p.CategoryId.ToString(),
+                BrandName = p.Brand?.Name,
+                Slug = p.Slug
+            }).ToList();
 
             if (!string.IsNullOrWhiteSpace(q))
             {
                 var key = q.Trim().ToLower();
-                flatProducts = flatProducts.Where(p =>
+                productsVM = productsVM.Where(p =>
                     (p.Name ?? "").ToLower().Contains(key) ||
                     (p.CategoryName ?? "").ToLower().Contains(key) ||
                     (p.BrandName ?? "").ToLower().Contains(key)
@@ -63,7 +59,7 @@ namespace HDKmall.Areas.Admin.Controllers
             }
 
             ViewBag.Search = q;
-            return View(flatProducts);
+            return View(productsVM);
         }
 
         public IActionResult Create()
