@@ -73,6 +73,9 @@ namespace HDKmall.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewBag.ActiveTab = "banners";
+            ViewBag.Products = _productService.GetAllProducts().ToList();
+            ViewBag.Categories = _categoryService.GetAllCategories().ToList();
+            ViewBag.Brands = _brandService.GetAllBrands().ToList();
             return View(new Banner { IsActive = true });
         }
 
@@ -94,6 +97,9 @@ namespace HDKmall.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.ActiveTab = "banners";
+                ViewBag.Products = _productService.GetAllProducts().ToList();
+                ViewBag.Categories = _categoryService.GetAllCategories().ToList();
+                ViewBag.Brands = _brandService.GetAllBrands().ToList();
                 return View(banner);
             }
 
@@ -107,6 +113,9 @@ namespace HDKmall.Areas.Admin.Controllers
             ViewBag.ActiveTab = "banners";
             var banner = _bannerService.GetBannerById(id);
             if (banner == null) return NotFound();
+            ViewBag.Products = _productService.GetAllProducts().ToList();
+            ViewBag.Categories = _categoryService.GetAllCategories().ToList();
+            ViewBag.Brands = _brandService.GetAllBrands().ToList();
             return View(banner);
         }
 
@@ -128,6 +137,9 @@ namespace HDKmall.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.ActiveTab = "banners";
+                ViewBag.Products = _productService.GetAllProducts().ToList();
+                ViewBag.Categories = _categoryService.GetAllCategories().ToList();
+                ViewBag.Brands = _brandService.GetAllBrands().ToList();
                 return View(banner);
             }
 
