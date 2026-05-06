@@ -65,51 +65,87 @@
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="LinkUrl" class="form-label fw-semibold text-dark">Đường Dẫn Khi Click</label>
+                        <label class="form-label fw-semibold text-dark">Đường Dẫn Khi Click</label>
 
-                        <!-- 3 Column Selection Table -->
-                        <div class="row g-2 mb-3 bg-white p-2 rounded border">
-                            <div class="col-md-4">
-                                <div class="bg-light text-center py-1 fw-bold rounded mb-1" style="font-size:14px;">Sản Phẩm</div>
-                                <div class="list-group border-0" style="max-height: 180px; overflow-y: auto;">
-                                    @if(ViewBag.Products != null) {
-                                        foreach(var item in ViewBag.Products) {
-                                            <button type="button" class="list-group-item list-group-item-action py-1 px-2 small border-0 border-bottom link-selector-btn" data-url="/product/@item.Slug">
-                                                <i class="bi bi-box-seam me-1"></i> @item.Name
-                                            </button>
-                                        }
-                                    }
+                        <!-- Tab switcher -->
+                        <div class="link-picker-panel border rounded-3 overflow-hidden mb-2" style="background:#f8f9fa;">
+                            <!-- Tab Buttons -->
+                            <div class="d-flex border-bottom" style="background:#fff;">
+                                <a href="#" class="link-tab-btn flex-fill text-center py-2 fw-semibold text-decoration-none border-0 active-tab" data-tab="products" style="font-size:13px; color:#0d6efd; border-bottom: 3px solid #0d6efd;">
+                                    <i class="bi bi-box-seam me-1"></i>Sản Phẩm
+                                </a>
+                                <a href="#" class="link-tab-btn flex-fill text-center py-2 fw-semibold text-decoration-none border-0 border-start" data-tab="categories" style="font-size:13px; color:#6c757d; border-bottom: 3px solid transparent;">
+                                    <i class="bi bi-grid me-1"></i>Danh Mục
+                                </a>
+                                <a href="#" class="link-tab-btn flex-fill text-center py-2 fw-semibold text-decoration-none border-0 border-start" data-tab="brands" style="font-size:13px; color:#6c757d; border-bottom: 3px solid transparent;">
+                                    <i class="bi bi-tag me-1"></i>Thương Hiệu
+                                </a>
+                            </div>
+
+                            <!-- Search box -->
+                            <div class="px-3 pt-2 pb-1" style="background:#fff;">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                    <input type="text" id="linkSearchBox" class="form-control bg-light border-start-0" placeholder="Tìm kiếm..." />
                                 </div>
                             </div>
-                            <div class="col-md-4 border-start">
-                                <div class="bg-light text-center py-1 fw-bold rounded mb-1" style="font-size:14px;">Danh Mục</div>
-                                <div class="list-group border-0" style="max-height: 180px; overflow-y: auto;">
-                                    @if(ViewBag.Categories != null) {
-                                        foreach(var item in ViewBag.Categories) {
-                                            <button type="button" class="list-group-item list-group-item-action py-1 px-2 small border-0 border-bottom link-selector-btn" data-url="/Category?categoryId=@item.Id">
-                                                <i class="bi bi-grid me-1"></i> @item.Name
-                                            </button>
-                                        }
-                                    }
+
+                            <!-- Tables -->
+                            <div id="tab-products" class="link-tab-content" style="display:block;">
+                                <div style="max-height:220px; overflow-y:auto;">
+                                    <table class="table table-hover table-sm mb-0" style="font-size:13px;">
+                                        <tbody id="tbody-products">
+                                            @if(ViewBag.Products != null) {
+                                                foreach(var item in ViewBag.Products) {
+                                                    <tr class="link-row" data-url="/product/@item.Slug" data-name="@item.Name" style="cursor:pointer;">
+                                                        <td class="ps-3"><i class="bi bi-box-seam text-primary me-2"></i>@item.Name</td>
+                                                        <td class="text-muted pe-3" style="white-space:nowrap; font-size:11px;">/product/@item.Slug</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <div class="col-md-4 border-start">
-                                <div class="bg-light text-center py-1 fw-bold rounded mb-1" style="font-size:14px;">Thương Hiệu</div>
-                                <div class="list-group border-0" style="max-height: 180px; overflow-y: auto;">
-                                    @if(ViewBag.Brands != null) {
-                                        foreach(var item in ViewBag.Brands) {
-                                            <button type="button" class="list-group-item list-group-item-action py-1 px-2 small border-0 border-bottom link-selector-btn" data-url="/Brand?brandId=@item.Id">
-                                                <i class="bi bi-tag me-1"></i> @item.Name
-                                            </button>
-                                        }
-                                    }
+
+                            <div id="tab-categories" class="link-tab-content" style="display:none;">
+                                <div style="max-height:220px; overflow-y:auto;">
+                                    <table class="table table-hover table-sm mb-0" style="font-size:13px;">
+                                        <tbody id="tbody-categories">
+                                            @if(ViewBag.Categories != null) {
+                                                foreach(var item in ViewBag.Categories) {
+                                                    <tr class="link-row" data-url="/Category?categoryId=@item.Id" data-name="@item.Name" style="cursor:pointer;">
+                                                        <td class="ps-3"><i class="bi bi-grid text-success me-2"></i>@item.Name</td>
+                                                        <td class="text-muted pe-3" style="white-space:nowrap; font-size:11px;">/Category?categoryId=@item.Id</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="tab-brands" class="link-tab-content" style="display:none;">
+                                <div style="max-height:220px; overflow-y:auto;">
+                                    <table class="table table-hover table-sm mb-0" style="font-size:13px;">
+                                        <tbody id="tbody-brands">
+                                            @if(ViewBag.Brands != null) {
+                                                foreach(var item in ViewBag.Brands) {
+                                                    <tr class="link-row" data-url="/Brand?brandId=@item.Id" data-name="@item.Name" style="cursor:pointer;">
+                                                        <td class="ps-3"><i class="bi bi-tag text-warning me-2"></i>@item.Name</td>
+                                                        <td class="text-muted pe-3" style="white-space:nowrap; font-size:11px;">/Brand?brandId=@item.Id</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
 
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="bi bi-cursor text-muted"></i></span>
-                            <input asp-for="LinkUrl" class="form-control border-start-0 bg-light" id="bannerLink" placeholder="Hoặc nhập đường dẫn tùy chỉnh..." />
+                            <input asp-for="LinkUrl" class="form-control border-start-0 bg-light" id="bannerLink" placeholder="Đường dẫn sẽ hiện ở đây sau khi chọn..." />
                         </div>
                     </div>
 
@@ -171,20 +207,73 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
-            // Khi chọn một đường dẫn từ bảng, điền vào ô Input
-            $('.link-selector-btn').on('click', function() {
-                $('.link-selector-btn').removeClass('active bg-primary text-white');
-                $(this).addClass('active bg-primary text-white');
-                
-                var selectedUrl = $(this).data('url');
-                if(selectedUrl) {
-                    $('#bannerLink').val(selectedUrl);
+        // =============================================
+        // LINK PICKER: Tab switching + Row click + Search
+        // =============================================
+        (function() {
+            var tabs = document.querySelectorAll('.link-tab-btn');
+            var contents = document.querySelectorAll('.link-tab-content');
+            var searchBox = document.getElementById('linkSearchBox');
+
+            // Tab switching
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var targetTab = this.dataset.tab;
+
+                    tabs.forEach(function(t) {
+                        t.style.color = '#6c757d';
+                        t.style.borderBottom = '3px solid transparent';
+                    });
+                    this.style.color = '#0d6efd';
+                    this.style.borderBottom = '3px solid #0d6efd';
+
+                    contents.forEach(function(c) { c.style.display = 'none'; });
+                    document.getElementById('tab-' + targetTab).style.display = 'block';
+
+                    if (searchBox) searchBox.value = '';
+                    filterRows('');
+                });
+            });
+
+            // Row click → fill link input
+            document.addEventListener('click', function(e) {
+                var row = e.target.closest('.link-row');
+                if (!row) return;
+                e.preventDefault();
+                e.stopPropagation();
+
+                document.querySelectorAll('.link-row').forEach(function(r) {
+                    r.classList.remove('table-primary');
+                });
+                row.classList.add('table-primary');
+
+                var url = row.dataset.url;
+                if (url) {
+                    document.getElementById('bannerLink').value = url;
                     updateBannerPreview();
                 }
             });
-        });
 
+            // Search filter
+            function filterRows(keyword) {
+                var kw = keyword.toLowerCase();
+                document.querySelectorAll('.link-row').forEach(function(row) {
+                    var name = (row.dataset.name || '').toLowerCase();
+                    row.style.display = name.includes(kw) ? '' : 'none';
+                });
+            }
+
+            if (searchBox) {
+                searchBox.addEventListener('input', function() {
+                    filterRows(this.value.trim());
+                });
+            }
+        })();
+
+        // =============================================
+        // PREVIEW UPDATER
+        // =============================================
         function updateBannerPreview() {
             const url = document.getElementById('bannerUrl').value;
             const title = document.getElementById('bannerTitle').value;
