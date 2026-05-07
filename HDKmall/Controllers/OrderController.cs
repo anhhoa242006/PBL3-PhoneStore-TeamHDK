@@ -57,7 +57,13 @@ namespace HDKmall.Controllers
             }
             else
             {
-                checkoutCart = cart;
+                // Nếu không chọn cụ thể, lấy tất cả sản phẩm trong giỏ nhưng phải còn đang bán (IsActive)
+                checkoutCart = new ShoppingCart
+                {
+                    Id = cart.Id,
+                    UserId = cart.UserId,
+                    Items = cart.Items.Where(i => i.Product?.IsActive ?? true).ToList()
+                };
             }
 
             return View(checkoutCart);
