@@ -55,6 +55,10 @@ namespace HDKmall.Controllers
                 {
                     categoryId = category.Id;
                 }
+                else
+                {
+                    categoryId = -1; // Force no results if category slug is invalid
+                }
             }
 
             if (!string.IsNullOrEmpty(brand) && !brandId.HasValue)
@@ -63,6 +67,10 @@ namespace HDKmall.Controllers
                 if (br != null)
                 {
                     brandId = br.Id;
+                }
+                else
+                {
+                    brandId = -1; // Force no results if brand slug is invalid
                 }
             }
 
