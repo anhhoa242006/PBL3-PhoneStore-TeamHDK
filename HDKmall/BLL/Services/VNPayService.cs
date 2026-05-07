@@ -24,7 +24,8 @@ namespace HDKmall.BLL.Services
 
         public string CreatePaymentUrl(PaymentVM model, HttpContext context)
         {
-            var tick = DateTime.Now.Ticks.ToString();
+            var vnTime = GetVietnamTime();
+            var tick = vnTime.Ticks.ToString();
             var requestId = Random.Shared.Next(100000).ToString();
 
             var vnpayData = new SortedDictionary<string, string>(StringComparer.Ordinal)
@@ -33,7 +34,7 @@ namespace HDKmall.BLL.Services
                 { "vnp_Command", "pay" },
                 { "vnp_TmnCode", _tmnCode },
                 { "vnp_Amount", ((long)model.TotalAmount * 100).ToString() },
-                { "vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss") },
+                { "vnp_CreateDate", vnTime.ToString("yyyyMMddHHmmss") },
                 { "vnp_CurrCode", "VND" },
                 { "vnp_IpAddr", GetIpAddress(context) },
                 { "vnp_Locale", "vn" },
@@ -41,7 +42,7 @@ namespace HDKmall.BLL.Services
                 { "vnp_OrderType", "other" },
                 { "vnp_ReturnUrl", model.ReturnUrl },
                 { "vnp_TxnRef", model.OrderCode },
-                { "vnp_ExpireDate", DateTime.Now.AddHours(1).ToString("yyyyMMddHHmmss") }
+                { "vnp_ExpireDate", vnTime.AddHours(1).ToString("yyyyMMddHHmmss") }
             };
 
             var queryBuilder = new StringBuilder();
@@ -127,8 +128,20 @@ namespace HDKmall.BLL.Services
                 OrderId = 0,
                 TransactionId = transactionNo,
                 Amount = amount / 100m,
-                TransactionDate = DateTime.Now
+                TransactionDate = GetVietnamTime()
             };
+        }
+
+        private DateTime GetVietnamTime()
+        {
+            try
+            {
+                return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh"));
+            }
         }
 
         private string GetIpAddress(HttpContext context)
