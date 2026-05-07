@@ -19,10 +19,10 @@ namespace HDKmall.BLL.Services
         {
             _configuration = configuration;
             _logger = logger;
-            _momoUrl = _configuration["MoMo:Url"] ?? "https://test-payment.momo.vn/v3/gateway/api/create";
-            _partnerCode = _configuration["MoMo:PartnerCode"] ?? "MOMERCHANT";
-            _accessKey = _configuration["MoMo:AccessKey"] ?? "F8591820140105";
-            _secretKey = _configuration["MoMo:SecretKey"] ?? "bJisuQtDXiVD7VQ3Dij05sDHxGT205fW";
+            _momoUrl = _configuration["MoMo:Url"] ?? "https://test-payment.momo.vn/v2/gateway/api/create";
+            _partnerCode = _configuration["MoMo:PartnerCode"] ?? "MOMOBKUN20180529";
+            _accessKey = _configuration["MoMo:AccessKey"] ?? "klm05TvNBzhg7h7j";
+            _secretKey = _configuration["MoMo:SecretKey"] ?? "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
         }
 
         public async Task<string> CreatePaymentUrl(PaymentVM model, HttpContext context)
