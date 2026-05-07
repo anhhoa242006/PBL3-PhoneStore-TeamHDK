@@ -23,6 +23,8 @@ namespace HDKmall.ViewModels
         /// <summary>Loại sản phẩm — quyết định cấu trúc giá và phiên bản</summary>
         public ProductType ProductType { get; set; } = ProductType.HasVersions;
 
+        public bool IsActive { get; set; } = true;
+
         /// <summary>
         /// Giá trực tiếp – dùng cho ColorsOnly và Simple.
         /// Với HasVersions, giá lưu trong Version.BasePrice.

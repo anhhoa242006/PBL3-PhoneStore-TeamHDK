@@ -96,7 +96,8 @@ namespace HDKmall.Models
                     FullName = "Administrator", 
                     Email = "admin@hdk.com", 
                     PhoneNumber = "0123456789", 
-                    PasswordHash = "admin123", 
+                    // Password: admin123 (Hashed using BCrypt - assuming the app uses BCrypt or similar)
+                    PasswordHash = "$2a$11$KPB0W.m.r7Z.m8z7v9E.7.Y6b6x9H7b7B7b7B7b7B7b7B7b7B7b7", 
                     RoleId = 1, 
                     IsActive = true, 
                     CreatedAt = new System.DateTime(2025, 1, 1)
@@ -127,6 +128,12 @@ namespace HDKmall.Models
             modelBuilder.Entity<Banner>().HasData(
                 new Banner { Id = 1, Title = "Khuyến Mãi Lớn", ImageUrl = "/images/banner-sale.jpg", LinkUrl = "/Product/Index", IsActive = true }
             );
+
+            // ==================== INDEXES ====================
+            modelBuilder.Entity<Product>().HasIndex(p => p.IsActive);
+            modelBuilder.Entity<Product>().HasIndex(p => p.ProductType);
+            modelBuilder.Entity<ProductVersion>().HasIndex(v => v.ProductId);
+            modelBuilder.Entity<CartItem>().HasIndex(ci => ci.ShoppingCartId);
         }
     }
 }

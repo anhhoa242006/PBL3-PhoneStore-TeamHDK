@@ -34,5 +34,6 @@ namespace HDKmall.DAL.Interfaces
         void DeleteSpecifications(int productId);
         void DeleteSpecById(int specId);
         void DeleteSpecificationsByVersionId(int versionId);
+        void SaveChanges();
     }
 }

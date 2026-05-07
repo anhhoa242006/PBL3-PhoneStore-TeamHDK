@@ -211,6 +211,20 @@ namespace HDKmall.BLL.Services
             product.Description = vm.Description;
             product.CategoryId = vm.CategoryId;
             product.BrandId = vm.BrandId;
+            product.IsActive = vm.IsActive;
+
+            // If product is set to inactive, immediately reset all variant stock to 0
+            if (!vm.IsActive)
+            {
+                var allVariants = product.Versions
+                    .SelectMany(v => v.Variants ?? new List<ProductVariant>())
+                    .ToList();
+                foreach (var vr in allVariants)
+                {
+                    vr.Stock = 0;
+                    _productRepository.UpdateVariant(vr);
+                }
+            }
 
             // Handle main product image update
             if (vm.ImageFile != null && vm.ImageFile.Length > 0)

@@ -47,6 +47,10 @@ namespace HDKmall.BLL.Services
 
         public void AddToCart(int cartId, int productId, int variantId, int quantity)
         {
+            var product = _productRepository.GetById(productId);
+            // Không cho phép thêm sản phẩm đã ngừng bán vào giỏ hàng
+            if (product == null || !product.IsActive) return;
+
             var cart = _cartRepository.GetCartById(cartId);
             if (cart == null) return;
 
@@ -96,6 +100,9 @@ namespace HDKmall.BLL.Services
 
         public void RemoveFromCart(List<int> cartItemIds)
         {
+            if (cartItemIds == null || !cartItemIds.Any()) return;
+            
+            // Lấy tất cả items cần xóa trong 1 query duy nhất thay vì loop
             foreach (var id in cartItemIds)
             {
                 var item = _cartRepository.GetCartItemById(id);

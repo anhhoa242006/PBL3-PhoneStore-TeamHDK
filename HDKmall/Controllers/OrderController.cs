@@ -51,7 +51,8 @@ namespace HDKmall.Controllers
                 {
                     Id = cart.Id,
                     UserId = cart.UserId,
-                    Items = cart.Items.Where(i => selectedIds.Contains(i.Id)).ToList()
+                    // Lọc chỉ lấy những sản phẩm còn đang bán (IsActive = true)
+                    Items = cart.Items.Where(i => selectedIds.Contains(i.Id) && (i.Product?.IsActive ?? true)).ToList()
                 };
             }
             else
@@ -87,9 +88,11 @@ namespace HDKmall.Controllers
                 selectedIds = selectedStr.Split(',').Select(int.Parse).ToList();
             }
 
-            var itemsToOrder = selectedIds != null && selectedIds.Any()
-                ? cart.Items.Where(i => selectedIds.Contains(i.Id)).ToList()
-                : cart.Items.ToList();
+            var itemsToOrder = (selectedIds != null && selectedIds.Any()
+                ? cart.Items.Where(i => selectedIds.Contains(i.Id))
+                : cart.Items)
+                .Where(i => i.Product != null && i.Product.IsActive) // Đảm bảo chỉ đặt hàng sản phẩm đang bán
+                .ToList();
 
             if (!itemsToOrder.Any())
             {

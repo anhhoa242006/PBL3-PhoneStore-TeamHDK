@@ -55,6 +55,7 @@ namespace HDKmall.Areas.Admin.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Price = displayPrice,
+                    IsActive = p.IsActive,
                     ImageUrl = p.ImageUrl,
                     CategoryName = p.Category?.Name ?? p.CategoryId.ToString(),
                     BrandName = p.Brand?.Name,
@@ -122,6 +123,7 @@ namespace HDKmall.Areas.Admin.Controllers
                 CategoryId = product.CategoryId,
                 BrandId = product.BrandId,
                 ProductType = (ProductType)product.ProductType,
+                IsActive = product.IsActive,
                 ImageUrl = product.ImageUrl,
                 ExistingImages = (product.Images ?? new List<ProductImage>())
                     .OrderBy(i => i.DisplayOrder)

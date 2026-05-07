@@ -8,6 +8,7 @@ namespace HDKmall.ViewModels
         public string Name { get; set; }
         public string? Slug { get; set; }
         public decimal Price { get; set; }
+        public bool IsActive { get; set; } = true;
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public int CategoryId { get; set; }

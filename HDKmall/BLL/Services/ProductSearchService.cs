@@ -27,7 +27,8 @@ namespace HDKmall.BLL.Services
         {
             var products = _productRepository.GetAll();
             if (products == null) return new PaginationVM();
-            var query = products.AsQueryable();
+            // Only show active products to customers
+            var query = products.Where(p => p.IsActive).AsQueryable();
 
             // Apply filters
             if (filter.CategoryId.HasValue)
@@ -144,7 +145,7 @@ namespace HDKmall.BLL.Services
         public List<ProductListVM> GetProductsByCategory(int categoryId)
         {
             var products = _productRepository.GetAll()
-                .Where(p => p.CategoryId == categoryId)
+                .Where(p => p.CategoryId == categoryId && p.IsActive)
                 .ToList();
 
             return MapToProductListVM(products);
@@ -153,7 +154,7 @@ namespace HDKmall.BLL.Services
         public List<ProductListVM> GetProductsByBrand(int brandId)
         {
             var products = _productRepository.GetAll()
-                .Where(p => p.BrandId == brandId)
+                .Where(p => p.BrandId == brandId && p.IsActive)
                 .ToList();
 
             return MapToProductListVM(products);
@@ -162,6 +163,7 @@ namespace HDKmall.BLL.Services
         public List<ProductListVM> GetFeaturedProducts(int take = 10)
         {
             var products = _productRepository.GetAll()
+                .Where(p => p.IsActive)
                 .OrderByDescending(p => p.Versions.SelectMany(v => v.Reviews).Count())
                 .ToList();
 
@@ -172,6 +174,7 @@ namespace HDKmall.BLL.Services
         public List<ProductListVM> GetNewProducts(int take = 10)
         {
             var products = _productRepository.GetAll()
+                .Where(p => p.IsActive)
                 .OrderByDescending(p => p.Id)
                 .ToList();
 
@@ -182,12 +185,14 @@ namespace HDKmall.BLL.Services
         public ProductDetailVM GetProductDetail(int id)
         {
             var product = _productRepository.GetById(id);
+            if (product == null || !product.IsActive) return null;
             return MapToProductDetailVM(product);
         }
 
         public ProductDetailVM GetProductDetailBySlug(string slug)
         {
             var product = _productRepository.GetBySlug(slug);
+            if (product == null || !product.IsActive) return null;
             return MapToProductDetailVM(product);
         }
 

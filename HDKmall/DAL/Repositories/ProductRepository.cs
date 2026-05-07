@@ -17,11 +17,12 @@ namespace HDKmall.DAL.Repositories
 
         public IEnumerable<Product> GetAll()
         {
+            // Lightweight query — only load what's needed for listing/admin index.
+            // Reviews are NOT loaded here to avoid memory bloat.
             return _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
                 .Include(p => p.Versions)
-                    .ThenInclude(v => v.Reviews)
                 .ToList();
         }
 
@@ -267,6 +268,11 @@ namespace HDKmall.DAL.Repositories
         {
             var specs = _context.ProductSpecifications.Where(s => s.ProductVersion.ProductId == productId).ToList();
             _context.ProductSpecifications.RemoveRange(specs);
+            _context.SaveChanges();
+        }
+
+        public void SaveChanges()
+        {
             _context.SaveChanges();
         }
     }

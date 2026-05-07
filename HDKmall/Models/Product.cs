@@ -21,6 +21,7 @@ namespace HDKmall.Models
         public decimal? OriginalPrice { get; set; }
 
         public int ProductType { get; set; } = 1; // 1: HasVersions, 2: ColorsOnly
+        public bool IsActive { get; set; } = true;
 
         public string? Description { get; set; }
 

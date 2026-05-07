@@ -103,23 +103,15 @@ using (var scope = app.Services.CreateScope())
                     ALTER TABLE [dbo].[Products] ADD [ProductType] int NOT NULL DEFAULT 1;
                 END");
 
-            // Xóa dữ liệu liên quan đến ProductType = 3 (Simple) theo yêu cầu người dùng
+            // Kiểm tra cột IsActive
             context.Database.ExecuteSqlRaw(@"
-                -- Xóa Specifications
-                DELETE FROM ProductSpecifications WHERE ProductVersionId IN (
-                    SELECT Id FROM ProductVersions WHERE ProductId IN (SELECT Id FROM Products WHERE ProductType = 3)
-                );
-                -- Xóa Variants
-                DELETE FROM ProductVariants WHERE ProductVersionId IN (
-                    SELECT Id FROM ProductVersions WHERE ProductId IN (SELECT Id FROM Products WHERE ProductType = 3)
-                );
-                -- Xóa Versions
-                DELETE FROM ProductVersions WHERE ProductId IN (SELECT Id FROM Products WHERE ProductType = 3);
-                -- Xóa Images
-                DELETE FROM ProductImages WHERE ProductId IN (SELECT Id FROM Products WHERE ProductType = 3);
-                -- Xóa Products
-                DELETE FROM Products WHERE ProductType = 3;
-            ");
+                IF NOT EXISTS (SELECT * FROM sys.columns 
+                               WHERE object_id = OBJECT_ID(N'[dbo].[Products]') 
+                               AND name = 'IsActive')
+                BEGIN
+                    ALTER TABLE [dbo].[Products] ADD [IsActive] bit NOT NULL DEFAULT 1;
+                END");
+
     }
     catch { /* Bỏ qua nếu có lỗi hoặc đã tồn tại */ }
 }
