@@ -61,6 +61,11 @@
             align-items: center;
             gap: 12px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s;
+        }
+
+        .sidebar-brand:hover {
+            background: rgba(255,255,255,0.05);
         }
 
         .sidebar-brand .logo-icon {
@@ -150,13 +155,13 @@
 
     <!-- Sidebar -->
     <aside class="sidebar">
-        <div class="sidebar-brand">
+        <a href="/" class="sidebar-brand text-decoration-none">
             <div class="logo-icon"><i class="bi bi-phone"></i></div>
             <div class="text-white">
                 <div class="fw-bold fs-5 lh-1">PhoneStore</div>
                 <div class="small opacity-50" style="font-size: 0.65rem; letter-spacing: 2px;">MANAGEMENT</div>
             </div>
-        </div>
+        </a>
 
         <div class="sidebar-nav">
             <div class="text-white opacity-25 small uppercase fw-bold mb-3 px-3" style="font-size: 0.7rem; letter-spacing: 1px;">MENU CHÍNH</div>
