@@ -45,38 +45,45 @@ namespace HDKmall.BLL.Services
             return cart;
         }
 
-        public void AddToCart(int cartId, int productId, int variantId, int quantity)
+        public int AddToCart(int cartId, int productId, int variantId, int quantity)
         {
             var product = _productRepository.GetById(productId);
             // Không cho phép thêm sản phẩm đã ngừng bán vào giỏ hàng
-            if (product == null || !product.IsActive) return;
+            if (product == null || !product.IsActive) return 0;
 
             var cart = _cartRepository.GetCartById(cartId);
-            if (cart == null) return;
+            if (cart == null) return 0;
 
             int? nullableVariantId = variantId > 0 ? variantId : (int?)null;
 
             var existingItem = cart.Items.FirstOrDefault(i =>
                 i.ProductId == productId && i.VariantId == nullableVariantId);
 
+            int resultId = 0;
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
                 _cartRepository.UpdateCartItem(existingItem);
+                resultId = existingItem.Id;
             }
             else
             {
-                cart.Items.Add(new CartItem
+                var newItem = new CartItem
                 {
                     ProductId = productId,
                     VariantId = nullableVariantId,
                     Quantity = quantity,
                     ShoppingCartId = cartId
-                });
+                };
+                cart.Items.Add(newItem);
                 _cartRepository.Update(cart);
+                // After SaveChanges, newItem.Id will be populated
+                _cartRepository.SaveChanges();
+                resultId = newItem.Id;
             }
 
             _cartRepository.SaveChanges();
+            return resultId;
         }
 
         public void UpdateCartItem(int cartItemId, int quantity)

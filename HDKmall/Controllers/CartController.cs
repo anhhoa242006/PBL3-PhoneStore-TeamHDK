@@ -48,12 +48,12 @@ namespace HDKmall.Controllers
             var cart = _cartService.GetOrCreateCart(userId, sessionId);
             if (cart != null)
             {
-                _cartService.AddToCart(cart.Id, productId, variantId, quantity);
+                int cartItemId = _cartService.AddToCart(cart.Id, productId, variantId, quantity);
                 var count = _cartService.GetCartItemCount(userId, sessionId);
 
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    return Json(new { success = true, message = "Sản phẩm đã được thêm vào giỏ hàng", cartCount = count });
+                    return Json(new { success = true, message = "Sản phẩm đã được thêm vào giỏ hàng", cartCount = count, cartItemId = cartItemId });
                 }
 
                 TempData["success"] = "Sản phẩm đã được thêm vào giỏ hàng";

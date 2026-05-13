@@ -180,7 +180,7 @@ namespace HDKmall.Controllers
             }
 
             // Tránh cập nhật lại nếu đơn đã được xử lý trước đó
-            if (order.Status != "Pending")
+            if (order.Status != "AwaitingPayment")
             {
                 _logger.LogInformation("VNPay return: order {OrderId} already in status {Status}, skipping update", orderId, order.Status);
                 TempData["Success"] = "Đơn hàng đã được xử lý trước đó.";
@@ -270,7 +270,7 @@ namespace HDKmall.Controllers
             }
 
             // Tránh cập nhật lại nếu đơn đã được xử lý trước đó
-            if (order.Status != "Pending")
+            if (order.Status != "AwaitingPayment")
             {
                 _logger.LogInformation("MoMo return: order {OrderId} already in status {Status}, skipping update", orderId, order.Status);
                 TempData["Success"] = "Đơn hàng đã được xử lý trước đó.";

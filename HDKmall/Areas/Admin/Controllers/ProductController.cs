@@ -59,7 +59,13 @@ namespace HDKmall.Areas.Admin.Controllers
                     ImageUrl = p.ImageUrl,
                     CategoryName = p.Category?.Name ?? p.CategoryId.ToString(),
                     BrandName = p.Brand?.Name,
-                    Slug = p.Slug
+                    Slug = p.Slug,
+                    TotalStock = p.Versions?.Sum(v => v.Variants?.Sum(vr => vr.Stock) ?? 0) ?? 0,
+                    VariantStocks = p.Versions?.SelectMany(v => v.Variants?.Select(vr => new VariantStockInfo
+                    {
+                        VariantName = p.ProductType == 1 ? $"{v.Name} - {vr.Color}" : vr.Color,
+                        Stock = vr.Stock
+                    }) ?? new List<VariantStockInfo>()).ToList()
                 };
             }).ToList();
 

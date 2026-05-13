@@ -22,5 +22,13 @@ namespace HDKmall.ViewModels
         public string? VersionName { get; set; }
         public decimal? OriginalPrice { get; set; }
         public int DiscountPercent { get; set; }
+        public int TotalStock { get; set; }
+        public List<VariantStockInfo>? VariantStocks { get; set; }
+    }
+
+    public class VariantStockInfo
+    {
+        public string VariantName { get; set; }
+        public int Stock { get; set; }
     }
 }

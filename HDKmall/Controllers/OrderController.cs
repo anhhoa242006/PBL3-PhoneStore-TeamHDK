@@ -170,7 +170,7 @@ namespace HDKmall.Controllers
                 _           => orders.Where(o => o.Status == "Pending" || o.Status == "Processing")
             };
 
-            // Counts for badge display
+            // Counts for badge display (excluding AwaitingPayment)
             ViewBag.CountPending   = orders.Count(o => o.Status == "Pending" || o.Status == "Processing");
             ViewBag.CountShipping  = orders.Count(o => o.Status == "Shipping");
             ViewBag.CountDelivered = orders.Count(o => o.Status == "Delivered");

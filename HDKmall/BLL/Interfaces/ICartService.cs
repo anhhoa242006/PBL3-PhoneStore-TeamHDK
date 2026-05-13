@@ -6,7 +6,7 @@ namespace HDKmall.BLL.Interfaces
     public interface ICartService
     {
         ShoppingCart GetOrCreateCart(int? userId, string sessionId);
-        void AddToCart(int cartId, int productId, int variantId, int quantity);
+        int AddToCart(int cartId, int productId, int variantId, int quantity);
         void UpdateCartItem(int cartItemId, int quantity);
         void RemoveFromCart(int cartItemId);
         void RemoveFromCart(List<int> cartItemIds);

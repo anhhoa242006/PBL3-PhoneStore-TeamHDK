@@ -77,22 +77,24 @@
                                 @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
                                 {
                                     var statusClass = order.Status switch {
-                                        "Pending"    => "bg-warning text-dark",
-                                        "Processing" => "bg-info text-dark",
-                                        "Shipping"   => "bg-primary",
-                                        "Delivered"  => "bg-success",
-                                        "Cancelled"  => "bg-danger",
-                                        "Failed"     => "bg-dark",
-                                        _            => "bg-secondary"
+                                        "Pending"         => "bg-warning text-dark",
+                                        "AwaitingPayment" => "bg-secondary text-white",
+                                        "Processing"      => "bg-info text-dark",
+                                        "Shipping"        => "bg-primary",
+                                        "Delivered"       => "bg-success",
+                                        "Cancelled"       => "bg-danger",
+                                        "Failed"          => "bg-dark",
+                                        _                 => "bg-secondary"
                                     };
                                     var statusText = order.Status switch {
-                                        "Pending"    => "Chờ xử lý",
-                                        "Processing" => "Đang xử lý",
-                                        "Shipping"   => "Đang giao",
-                                        "Delivered"  => "Đã nhận",
-                                        "Cancelled"  => "Đã hủy",
-                                        "Failed"     => "Thanh toán thất bại",
-                                        _            => order.Status
+                                        "Pending"         => "Chờ xử lý",
+                                        "AwaitingPayment" => "Chờ thanh toán",
+                                        "Processing"      => "Đang xử lý",
+                                        "Shipping"        => "Đang giao",
+                                        "Delivered"       => "Đã nhận",
+                                        "Cancelled"       => "Đã hủy",
+                                        "Failed"          => "Thanh toán thất bại",
+                                        _                 => order.Status
                                     };
                                     <tr>
                                         <td class="ps-4 fw-bold">#@order.Id</td>

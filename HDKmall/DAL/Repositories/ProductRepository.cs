@@ -23,6 +23,7 @@ namespace HDKmall.DAL.Repositories
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
                 .Include(p => p.Versions)
+                    .ThenInclude(v => v.Variants)
                 .ToList();
         }
 

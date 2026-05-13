@@ -109,6 +109,7 @@
                         @{
                             var detailStatusClass = Model.Status switch {
                                 "Pending" => "bg-warning text-dark",
+                                "AwaitingPayment" => "bg-secondary text-white",
                                 "Processing" => "bg-info text-dark",
                                 "Shipping" => "bg-primary",
                                 "Delivered" => "bg-success",
@@ -118,6 +119,7 @@
                             };
                             var detailStatusText = Model.Status switch {
                                 "Pending" => "Chờ xử lý",
+                                "AwaitingPayment" => "Chờ thanh toán",
                                 "Processing" => "Đang xử lý",
                                 "Shipping" => "Đang giao",
                                 "Delivered" => "Đã giao",
@@ -139,7 +141,7 @@
                         </button>
                     </form>
                 }
-                @if (Model.Status == "Pending" && (Model.PaymentMethod == "VNPay" || Model.PaymentMethod == "MoMo"))
+                @if (Model.Status == "AwaitingPayment" && (Model.PaymentMethod == "VNPay" || Model.PaymentMethod == "MoMo"))
                 {
                     <a href="@Url.Action("Index", "Payment", new { orderId = Model.Id })" class="btn btn-primary w-100 rounded-pill py-3 fw-bold mt-2">
                         💳 Thanh toán ngay
