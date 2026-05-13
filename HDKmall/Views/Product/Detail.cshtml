@@ -406,7 +406,7 @@
                                     <div class="text-muted mb-1" style="font-size:11px;">@(item.BrandName ?? "Chính hãng")</div>
                                     <a href="/product/@(item.Slug ?? item.Id.ToString())@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" 
                                        class="text-decoration-none text-dark fw-bold lh-sm mb-2" 
-                                       style="font-size:14px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:36px;">@item.Name @(string.IsNullOrEmpty(item.VersionName) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)</a>
+                                       style="font-size:14px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:36px;">@item.Name @(string.IsNullOrEmpty(item.VersionName) || item.VersionName.Equals("Mặc định", StringComparison.OrdinalIgnoreCase) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)</a>
                                     
                                     <div class="mt-auto">
                                         <div class="text-danger fw-bold fs-6 mb-2">
@@ -521,7 +521,7 @@
         
         const rvVer = document.getElementById('reviewProductVersion');
         if (rvVer) {
-            if (productData.ProductType === 2) {
+            if (productData.ProductType === 2 || currentVersion.Name.toLowerCase() === 'mặc định') {
                 rvVer.style.display = 'none';
             } else {
                 rvVer.innerText = `Phiên bản: ${currentVersion.Name}`;
@@ -542,7 +542,7 @@
         // Update Title
         const titleEl = document.getElementById('reviewVersionTitle');
         if (titleEl) {
-            titleEl.innerText = productData.ProductType === 2 ? "" : `- Phiên bản ${currentVersion.Name}`;
+            titleEl.innerText = (productData.ProductType === 2 || currentVersion.Name.toLowerCase() === 'mặc định') ? "" : `- Phiên bản ${currentVersion.Name}`;
         }
 
         const total = reviews.length;

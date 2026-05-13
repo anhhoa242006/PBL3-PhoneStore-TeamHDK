@@ -186,7 +186,7 @@
                             <div class="text-muted small fw-medium mb-1">@(string.IsNullOrEmpty(item.BrandName) ? "Hãng" : item.BrandName)</div>
                             <h5 class="card-title fs-6 lh-sm mb-3">
                                 <a href="/product/@(string.IsNullOrEmpty(item.Slug) ? HDKmall.Helpers.SlugHelper.GenerateSlug(item.Name) : item.Slug)@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" class="text-decoration-none text-dark fw-bold">
-                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
+                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.VersionName.Equals("Mặc định", StringComparison.OrdinalIgnoreCase) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
                                 </a>
                             </h5>
                             <div class="mt-auto">
@@ -249,7 +249,7 @@
                             <div class="text-muted small fw-medium mb-1">@(string.IsNullOrEmpty(item.BrandName) ? "Hãng" : item.BrandName)</div>
                             <h5 class="card-title fs-6 lh-sm mb-3">
                                 <a href="@(!string.IsNullOrEmpty(item.Slug) ? "/product/" + item.Slug : "/Product/Detail/" + item.Id)" class="text-decoration-none text-dark fw-bold">
-                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) ? "" : " - " + item.VersionName)
+                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.VersionName.Equals("Mặc định", StringComparison.OrdinalIgnoreCase) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
                                 </a>
                             </h5>
                             <div class="mt-auto">
@@ -306,7 +306,7 @@
                         <div class="card-body d-flex flex-column bg-white">
                             <h5 class="card-title fs-6 lh-sm mb-2">
                                 <a href="/product/@(string.IsNullOrEmpty(item.Slug) ? item.Id.ToString() : item.Slug)@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" class="text-decoration-none text-dark fw-bold text-truncate-2">
-                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
+                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.VersionName.Equals("Mặc định", StringComparison.OrdinalIgnoreCase) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
                                 </a>
                             </h5>
                             <div class="mt-auto">

@@ -77,12 +77,15 @@ namespace HDKmall.Controllers
 
             if (!result.Succeeded || result.Principal == null)
             {
+                Console.WriteLine("Google Auth Failed: result.Succeeded=" + result.Succeeded);
                 TempData["ErrorMessage"] = "Đăng nhập bằng Google thất bại. Vui lòng thử lại.";
                 return RedirectToAction("Login");
             }
 
             var email = result.Principal.FindFirstValue(ClaimTypes.Email);
             var name = result.Principal.FindFirstValue(ClaimTypes.Name);
+            
+            Console.WriteLine($"Google Auth Success: Email={email}, Name={name}");
             
             if (string.IsNullOrEmpty(email))
             {

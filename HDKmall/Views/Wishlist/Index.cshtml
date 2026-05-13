@@ -49,7 +49,7 @@
                             <div class="text-muted small mb-1">@item.BrandName</div>
                             <h6 class="card-title fw-bold mb-3" style="height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                                 <a href="/product/@item.Slug@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" class="text-decoration-none text-dark">
-                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
+                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.VersionName.Equals("Mặc định", StringComparison.OrdinalIgnoreCase) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
                                 </a>
                             </h6>
                             <div class="mt-auto">

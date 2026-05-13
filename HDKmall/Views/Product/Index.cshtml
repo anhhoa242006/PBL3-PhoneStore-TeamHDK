@@ -159,7 +159,7 @@
                             <div class="p-3 d-flex flex-column flex-grow-1">
                                 <div class="text-muted" style="font-size:12px; margin-bottom:4px;">@item.BrandName</div>
                                 <a href="/product/@(string.IsNullOrEmpty(item.Slug) ? HDKmall.Helpers.SlugHelper.GenerateSlug(item.Name) : item.Slug)@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" class="text-decoration-none text-dark fw-semibold lh-sm mb-2" style="font-size:14px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
-                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
+                                    @item.Name @(string.IsNullOrEmpty(item.VersionName) || item.VersionName.Equals("Mặc định", StringComparison.OrdinalIgnoreCase) || item.Name.Contains(item.VersionName) ? "" : " - " + item.VersionName)
                                 </a>
                                 <div class="mt-auto">
                                     <div class="d-flex align-items-center gap-2 mb-2">
