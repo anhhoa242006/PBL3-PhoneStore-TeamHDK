@@ -16,6 +16,10 @@
     .preview-current-price { color: #d70018; font-size: 2.2rem; font-weight: 800; line-height: 1; }
     #livePreviewSection { background: #f8fafc; border-radius: 32px; padding: 60px 40px; margin-top: 50px; }
     .preview-card-inner { background: #fff; border-radius: 24px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; }
+    .img-delete-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(215, 0, 24, 0.6); display: none; align-items: center; justify-content: center; color: white; cursor: pointer; border-radius: 8px; }
+    .image-container.deleted .img-delete-overlay { display: flex; }
+    .image-container.deleted img { opacity: 0.3; }
+    .btn-delete-img { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border-radius: 50%; background: #d70018; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; z-index: 10; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -39,14 +43,14 @@
                 <div class="card-body p-4">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <input type="radio" class="btn-check" asp-for="ProductType" id="typeVersions" value="1">
+                            <input type="radio" class="btn-check" asp-for="ProductType" id="typeVersions" value="@((int)HDKmall.ViewModels.ProductType.HasVersions)">
                             <label class="btn btn-outline-primary w-100 py-3 rounded-3 text-start" for="typeVersions">
                                 <strong>Dung lượng</strong>
                                 <div class="small mt-1">iPhone, Laptop...</div>
                             </label>
                         </div>
                         <div class="col-md-6">
-                            <input type="radio" class="btn-check" asp-for="ProductType" id="typeColors" value="2">
+                            <input type="radio" class="btn-check" asp-for="ProductType" id="typeColors" value="@((int)HDKmall.ViewModels.ProductType.ColorsOnly)">
                             <label class="btn btn-outline-success w-100 py-3 rounded-3 text-start" for="typeColors">
                                 <strong>Chỉ màu sắc</strong>
                                 <div class="small mt-1">Loa, Tai nghe...</div>
@@ -84,11 +88,11 @@
                             </select>
                         </div>
 
-                        <div class="col-md-3" id="directPriceSection" style="@(Model.ProductType == ProductType.ColorsOnly ? "display:block;" : "display:none;")">
+                        <div class="col-md-3" id="directPriceSection" style="@(Model.ProductType == HDKmall.ViewModels.ProductType.ColorsOnly ? "display:block;" : "display:none;")">
                             <label asp-for="Price" class="form-label fw-bold text-muted small">Giá bán (₫)</label>
                             <input asp-for="Price" class="form-control bg-light border-0 fw-bold text-danger" type="number" />
                         </div>
-                        <div class="col-md-3" id="directOriginalPriceSection" style="@(Model.ProductType == ProductType.ColorsOnly ? "display:block;" : "display:none;")">
+                        <div class="col-md-3" id="directOriginalPriceSection" style="@(Model.ProductType == HDKmall.ViewModels.ProductType.ColorsOnly ? "display:block;" : "display:none;")">
                             <label asp-for="OriginalPrice" class="form-label fw-bold text-muted small">Giá gốc</label>
                             <input asp-for="OriginalPrice" class="form-control bg-light border-0" type="number" />
                         </div>
@@ -98,9 +102,12 @@
                             <input asp-for="ImageFile" type="file" class="form-control bg-light border-0" accept="image/*" />
                             @if (!string.IsNullOrEmpty(Model.ImageUrl))
                             {
-                                <div class="mt-2">
-                                    <img src="@Model.ImageUrl" style="width: 100px; height: 100px; object-fit: cover;" class="rounded border" />
-                                    <input type="hidden" asp-for="ImageUrl" />
+                                <div class="mt-2 position-relative d-inline-block" id="mainImagePreview">
+                                    <img src="@Model.ImageUrl" style="max-width: 200px; max-height: 200px; object-fit: contain !important; background: #f8f9fa;" class="rounded border" />
+                                    <input type="hidden" asp-for="ImageUrl" id="mainImageUrl" />
+                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle" style="width:24px; height:24px; padding:0; line-height:1;" onclick="deleteMainImage()">
+                                        <i class="bi bi-x small"></i>
+                                    </button>
                                 </div>
                             }
                         </div>
@@ -112,16 +119,26 @@
 
                         @if (Model.ExistingImages != null && Model.ExistingImages.Any())
                         {
-                            <div class="col-12 mt-2">
-                                <div class="d-flex flex-wrap gap-2">
+                            <div class="col-12 mt-3">
+                                <label class="form-label fw-bold text-muted small d-block mb-2">Gallery hiện tại (Bấm vào X để xóa)</label>
+                                <div class="d-flex flex-wrap gap-3">
                                     @for (int i = 0; i < Model.ExistingImages.Count; i++)
                                     {
-                                        <div class="position-relative border rounded" style="width:70px; height:70px;">
-                                            <img src="@Model.ExistingImages[i].ImageUrl" class="w-100 h-100 rounded" style="object-fit:cover;" />
+                                        <div class="position-relative image-container" id="galleryImg_@i" style="width:80px; height:80px;">
+                                            <img src="@Model.ExistingImages[i].ImageUrl" class="rounded-3 border" style="width: 100%; height: 100%; object-fit: contain !important; background: #f8f9fa;" />
                                             <input type="hidden" name="ExistingImages[@i].Id" value="@Model.ExistingImages[i].Id" />
                                             <input type="hidden" name="ExistingImages[@i].ImageUrl" value="@Model.ExistingImages[i].ImageUrl" />
-                                            <input class="form-check-input position-absolute top-0 end-0 m-1" type="checkbox" name="ExistingImages[@i].IsMain" value="true" />
-                                            <input type="hidden" name="ExistingImages[@i].IsMain" value="false" />
+                                            <input type="hidden" name="ExistingImages[@i].PublicId" value="@Model.ExistingImages[i].PublicId" />
+                                            
+                                            @* Use hidden input instead of checkbox for better reliability *@
+                                            <input type="hidden" name="ExistingImages[@i].IsDeleted" value="@(Model.ExistingImages[i].IsDeleted ? "true" : "false")" id="isDel_@i" />
+
+                                            <div class="btn-delete-img" onclick="toggleDeleteImage(@i)">
+                                                <i class="bi bi-x"></i>
+                                            </div>
+                                            <div class="img-delete-overlay" onclick="toggleDeleteImage(@i)">
+                                                <i class="bi bi-trash-fill fs-5"></i>
+                                            </div>
                                         </div>
                                     }
                                 </div>
@@ -137,7 +154,7 @@
             </div>
 
             <!-- PHẦN 1: DUNG LƯỢNG -->
-            <div id="sectionVersions" style="@(Model.ProductType == ProductType.HasVersions ? "display:block;" : "display:none;")">
+            <div id="sectionVersions" style="@(Model.ProductType == HDKmall.ViewModels.ProductType.HasVersions ? "display:block;" : "display:none;")">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold mb-0">Phiên bản dung lượng</h5>
                     <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" onclick="addVersion()">
@@ -145,7 +162,7 @@
                     </button>
                 </div>
                 <div id="versionsContainer">
-                    @if (Model.Versions != null && Model.ProductType == ProductType.HasVersions)
+                    @if (Model.Versions != null && Model.ProductType == HDKmall.ViewModels.ProductType.HasVersions)
                     {
                         for (int v = 0; v < Model.Versions.Count; v++)
                         {
@@ -160,7 +177,19 @@
                                         <div class="col-md-3"><label class="small fw-bold">Dung lượng</label><input type="text" name="Versions[@v].Name" value="@Model.Versions[v].Name" class="form-control bg-light border-0" required /></div>
                                         <div class="col-md-3"><label class="small fw-bold text-danger">Giá bán</label><input type="number" name="Versions[@v].BasePrice" value="@Model.Versions[v].BasePrice" class="form-control bg-light border-0" required /></div>
                                         <div class="col-md-3"><label class="small fw-bold">Giá gốc</label><input type="number" name="Versions[@v].OriginalPrice" value="@Model.Versions[v].OriginalPrice" class="form-control bg-light border-0" /></div>
-                                        <div class="col-md-3"><label class="small fw-bold">Ảnh</label><input type="file" name="Versions[@v].ImageFile" class="form-control form-control-sm" /><input type="hidden" name="Versions[@v].ImageUrl" value="@Model.Versions[v].ImageUrl" /></div>
+                                        <div class="col-md-3">
+                                            <label class="small fw-bold">Ảnh</label>
+                                            <input type="file" name="Versions[@v].ImageFile" class="form-control form-control-sm" />
+                                            @if (!string.IsNullOrEmpty(Model.Versions[v].ImageUrl))
+                                            {
+                                                <div class="mt-1 position-relative d-inline-block" id="vImgPreview_@v">
+                                                    <img src="@Model.Versions[v].ImageUrl" style="width: 50px; height: 50px; object-fit: contain; background: #f8f9fa;" class="rounded border" />
+                                                    <input type="hidden" name="Versions[@v].ImageUrl" value="@Model.Versions[v].ImageUrl" id="vImgUrl_@v" />
+                                                    <button type="button" class="btn btn-xs btn-danger position-absolute top-0 end-0 rounded-circle p-0 shadow-sm" style="width:20px; height:20px; margin-top:-8px; margin-right:-8px; z-index:10;" onclick="clearImageUrl('vImgUrl_@v', 'vImgPreview_@v')" title="Xóa ảnh">×</button>
+                                                    <div id="vImgDelBadge_@v" class="position-absolute bottom-0 start-0 bg-danger text-white tiny-text px-1 rounded" style="display:none; font-size:10px;">Xóa</div>
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
                                     <div class="row g-4">
                                         <div class="col-lg-7" id="variantsContainer_@v">
@@ -174,7 +203,17 @@
                                                         <div class="col-4"><label class="tiny-label">Màu</label><input type="text" name="Versions[@v].Variants[@vr].Color" value="@variant.Color" class="form-control form-control-sm" required /></div>
                                                         <div class="col-4"><label class="tiny-label">Giá</label><input type="number" name="Versions[@v].Variants[@vr].Price" value="@variant.Price" class="form-control form-control-sm" /></div>
                                                         <div class="col-4"><label class="tiny-label">Kho</label><input type="number" name="Versions[@v].Variants[@vr].Stock" value="@variant.Stock" class="form-control form-control-sm" required /></div>
-                                                        <div class="col-12 mt-2"><input type="file" name="Versions[@v].Variants[@vr].ImageFile" class="form-control form-control-sm" /><input type="hidden" name="Versions[@v].Variants[@vr].ImageUrl" value="@variant.ImageUrl" /></div>
+                                                        <div class="col-12 mt-2">
+                                                            <input type="file" name="Versions[@v].Variants[@vr].ImageFile" class="form-control form-control-sm" />
+                                                            @if (!string.IsNullOrEmpty(variant.ImageUrl))
+                                                            {
+                                                                <div class="mt-1 position-relative d-inline-block" id="vrImgPreview_@(v)_@(vr)">
+                                                                    <img src="@variant.ImageUrl" style="width: 40px; height: 40px; object-fit: contain; background: #f8f9fa;" class="rounded border" />
+                                                                    <input type="hidden" name="Versions[@v].Variants[@vr].ImageUrl" value="@variant.ImageUrl" id="vrImgUrl_@(v)_@(vr)" />
+                                                                    <button type="button" class="btn btn-xs btn-danger position-absolute top-0 end-0 rounded-circle p-0 shadow-sm" style="width:18px; height:18px; margin-top:-6px; margin-right:-6px; z-index:10;" onclick="clearImageUrl('vrImgUrl_@(v)_@(vr)', 'vrImgPreview_@(v)_@(vr)')" title="Xóa ảnh">×</button>
+                                                                </div>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
                                             }
@@ -204,7 +243,7 @@
             </div>
 
             <!-- PHẦN 2: CHỈ CÓ MÀU SẮC -->
-            <div id="sectionColors" style="@(Model.ProductType == ProductType.ColorsOnly ? "display:block;" : "display:none;")">
+            <div id="sectionColors" style="@(Model.ProductType == HDKmall.ViewModels.ProductType.ColorsOnly ? "display:block;" : "display:none;")">
                 @* Hidden inputs for the default version — needed for proper update (avoid delete+recreate) *@
                 @if (Model.Versions != null && Model.Versions.Any())
                 {
@@ -226,7 +265,7 @@
                                 </tr>
                             </thead>
                             <tbody id="colorVariantsContainer">
-                                @if (Model.ProductType == ProductType.ColorsOnly && Model.Versions != null && Model.Versions.Count > 0)
+                                @if (Model.ProductType == HDKmall.ViewModels.ProductType.ColorsOnly && Model.Versions != null && Model.Versions.Count > 0)
                                 {
                                     var defaultV = Model.Versions[0];
                                     for (int vr = 0; vr < defaultV.Variants.Count; vr++)
@@ -237,7 +276,17 @@
                                             <td class="px-4"><input type="text" name="Versions[0].Variants[@vr].Color" value="@variant.Color" class="form-control border-light" required /></td>
                                             <td><input type="number" name="Versions[0].Variants[@vr].Price" value="@variant.Price" class="form-control border-light" /></td>
                                             <td><input type="number" name="Versions[0].Variants[@vr].Stock" value="@variant.Stock" class="form-control border-light" required /></td>
-                                            <td><input type="file" name="Versions[0].Variants[@vr].ImageFile" class="form-control form-control-sm" /><input type="hidden" name="Versions[0].Variants[@vr].ImageUrl" value="@variant.ImageUrl" /></td>
+                                            <td>
+                                                <input type="file" name="Versions[0].Variants[@vr].ImageFile" class="form-control form-control-sm" />
+                                                @if (!string.IsNullOrEmpty(variant.ImageUrl))
+                                                {
+                                                    <div class="mt-1 position-relative d-inline-block" id="clrImgPreview_@vr">
+                                                        <img src="@variant.ImageUrl" style="width: 40px; height: 40px; object-fit: contain; background: #f8f9fa;" class="rounded border" />
+                                                        <input type="hidden" name="Versions[0].Variants[@vr].ImageUrl" value="@variant.ImageUrl" id="clrImgUrl_@vr" />
+                                                        <button type="button" class="btn btn-xs btn-danger position-absolute top-0 end-0 rounded-circle p-0 shadow-sm" style="width:18px; height:18px; margin-top:-6px; margin-right:-6px; z-index:10;" onclick="clearImageUrl('clrImgUrl_@vr', 'clrImgPreview_@vr')" title="Xóa ảnh">×</button>
+                                                    </div>
+                                                }
+                                            </td>
                                             <td class="text-end px-4"><button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeRow('colorRow_@vr')"><i class="bi bi-trash"></i></button></td>
                                         </tr>
                                     }
@@ -272,7 +321,7 @@
 @section Scripts {
     <script>
         let versionCount = @(Model.Versions?.Count ?? 0);
-        let colorVariantCount = @( (Model.ProductType == ProductType.ColorsOnly && Model.Versions != null && Model.Versions.Count > 0) ? Model.Versions[0].Variants.Count : 0);
+        let colorVariantCount = @( (Model.ProductType == HDKmall.ViewModels.ProductType.ColorsOnly && Model.Versions != null && Model.Versions.Count > 0) ? Model.Versions[0].Variants.Count : 0);
         let variantCounters = {}; let specCounters = {};
 
         @if(Model.Versions != null) {
@@ -304,43 +353,63 @@
             }
         });
 
+        function toggleDeleteImage(index) {
+            if(confirm("Bạn có chắc muốn xóa ảnh này khỏi bộ sưu tập?")) {
+                const container = document.getElementById(`galleryImg_${index}`);
+                const input = document.getElementById(`isDel_${index}`);
+                if (container && input) {
+                    input.value = "true";
+                    container.style.display = "none"; // Làm cho ảnh biến mất ngay lập tức
+                }
+            }
+        }
+
+        function deleteMainImage() {
+            if(confirm("Bạn có chắc muốn xóa ảnh đại diện này?")) {
+                const input = document.getElementById("mainImageUrl");
+                const preview = document.getElementById("mainImagePreview");
+                if (input) input.value = "";
+                if (preview) preview.style.display = "none";
+            }
+        }
+
+        function clearImageUrl(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (input) input.value = "";
+            if (preview) {
+                // Thay vì ẩn hoàn toàn, ta làm mờ và hiện chữ "Đã xóa" để người dùng biết
+                preview.style.opacity = "0.3";
+                preview.style.pointerEvents = "none";
+                const btn = preview.querySelector('button');
+                if(btn) btn.style.display = 'none';
+                
+                // Hiển thị thông báo nhỏ nếu có
+                const badge = document.getElementById(previewId.replace('Preview', 'DelBadge'));
+                if(badge) badge.style.display = 'block';
+            }
+        }
+
         // Backup window.onload just in case
         window.addEventListener('load', updateSections);
 
         function updateSections() {
             const checkedRadio = document.querySelector('input[name="ProductType"]:checked');
-            const val = checkedRadio?.value;
+            let val = checkedRadio ? checkedRadio.value : "@((int)Model.ProductType)";
             
             const sectionVersions  = document.getElementById('sectionVersions');
             const sectionColors    = document.getElementById('sectionColors');
             const directPrice      = document.getElementById('directPriceSection');
             const directOrig       = document.getElementById('directOriginalPriceSection');
 
-            // Determine if we should show sections based on value or fallback to server-side state if val is missing
-            let isHasVersions = (val === '1' || val === 'HasVersions');
-            let isColorsOnly  = (val === '2' || val === 'ColorsOnly');
-            
-            // If val is missing (e.g. script runs before browser finishes checking radio), 
-            // don't hide everything - keep what the server rendered or try to find the one with [checked] attribute
-            if (!val) {
-                const hasCheckedAttr = document.querySelector('input[name="ProductType"][checked]');
-                if (hasCheckedAttr) {
-                    const attrVal = hasCheckedAttr.value;
-                    isHasVersions = (attrVal === '1' || attrVal === 'HasVersions');
-                    isColorsOnly = (attrVal === '2' || attrVal === 'ColorsOnly');
-                } else {
-                    // If still nothing, don't force-hide if sections were already visible from server
-                    if (sectionVersions && sectionVersions.style.display === 'block') isHasVersions = true;
-                    if (sectionColors && sectionColors.style.display === 'block') isColorsOnly = true;
-                }
-            }
+            const isHasVersions = (val == "1");
+            const isColorsOnly  = (val == "2");
 
             if (sectionVersions) sectionVersions.style.display = isHasVersions ? 'block' : 'none';
             if (sectionColors) sectionColors.style.display   = isColorsOnly   ? 'block' : 'none';
             if (directPrice) directPrice.style.display     = isColorsOnly   ? 'block' : 'none';
             if (directOrig) directOrig.style.display      = isColorsOnly   ? 'block' : 'none';
 
-            // Disable inputs in hidden sections to prevent form submission conflicts
             toggleSectionInputs('sectionVersions', isHasVersions);
             toggleSectionInputs('sectionColors', isColorsOnly);
         }

@@ -235,7 +235,8 @@ namespace HDKmall.BLL.Services
             }
             else
             {
-                product.ImageUrl = vm.ImageUrl; // Keep existing if no new upload
+                // If vm.ImageUrl is null or empty, it means the user deleted it
+                product.ImageUrl = string.IsNullOrEmpty(vm.ImageUrl) ? null : vm.ImageUrl;
             }
 
             _productRepository.Update(product);
@@ -304,9 +305,9 @@ namespace HDKmall.BLL.Services
                             if (v == 0) product.ImageUrl = version.ImageUrl; // Update main thumb if first version
                         }
                     }
-                    else if (!string.IsNullOrEmpty(vVM.ImageUrl))
+                    else
                     {
-                        version.ImageUrl = vVM.ImageUrl;
+                        version.ImageUrl = string.IsNullOrEmpty(vVM.ImageUrl) ? null : vVM.ImageUrl;
                     }
 
                     if (isNewVersion) _productRepository.AddVersion(version);
@@ -352,7 +353,10 @@ namespace HDKmall.BLL.Services
                                 var upload = await _photoService.AddPhotoAsync(vrVM.ImageFile);
                                 if (upload.Error == null) variant.ImageUrl = upload.SecureUrl.AbsoluteUri;
                             }
-                            else if (!string.IsNullOrEmpty(vrVM.ImageUrl)) variant.ImageUrl = vrVM.ImageUrl;
+                            else
+                            {
+                                variant.ImageUrl = string.IsNullOrEmpty(vrVM.ImageUrl) ? null : vrVM.ImageUrl;
+                            }
 
                             if (isNewVariant) _productRepository.AddVariant(variant);
                             else _productRepository.UpdateVariant(variant);
@@ -401,7 +405,7 @@ namespace HDKmall.BLL.Services
             {
                 foreach (var exImg in vm.ExistingImages)
                 {
-                    if (exImg.IsMain) // Used as delete flag
+                    if (exImg.IsDeleted) // Use the new IsDeleted flag
                     {
                         if (!string.IsNullOrEmpty(exImg.PublicId))
                             await _photoService.DeletePhotoAsync(exImg.PublicId);

@@ -47,7 +47,7 @@
     
     /* Gallery */
     .gallery-main-wrapper { position: relative; padding: 10px; background: #fff; border-radius: 16px; margin-bottom: 15px; cursor: zoom-in; display: flex; align-items: center; justify-content: center; min-height: 400px; border: 1px solid #f0f0f0; }
-    .gallery-main { width: 100%; max-height: 450px; object-fit: contain; height: auto; }
+    .gallery-main, #mainDisplayImg { width: 100% !important; height: 450px !important; object-fit: contain !important; background: #fff; display: block; }
     .thumb-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; justify-content: flex-start; }
     .thumb-item { width: 70px; height: 70px; border-radius: 8px; border: 1px solid #eee; cursor: pointer; object-fit: contain; background: #fff; transition: .2s; flex-shrink: 0; }
     .thumb-item.active { border-color: var(--primary-red); box-shadow: 0 0 0 1px var(--primary-red); }
@@ -62,6 +62,57 @@
     /* Tabs-like sections */
     .section-title { font-size: 18px; font-weight: 800; color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; position: relative; }
     .section-title::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 60px; height: 2px; background: var(--primary-red); }
+
+    /* Custom Zoom/Lightbox Modals */
+    .modal-full-view { background: rgba(0,0,0,0.98) !important; backdrop-filter: blur(10px); padding: 0 !important; z-index: 9999 !important; }
+    .modal-full-view .modal-dialog { 
+        max-width: 100% !important; 
+        width: 100% !important; 
+        height: 100% !important; 
+        margin: 0 !important; 
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .modal-full-view .modal-content { background: transparent !important; border: none !important; box-shadow: none !important; width: 100% !important; height: 100% !important; }
+    .modal-full-view .modal-body { 
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important; 
+        align-items: center !important; 
+        justify-content: center !important; 
+        padding: 0 !important; 
+        position: relative !important;
+        background: transparent !important;
+    }
+    .modal-full-view .zoomed-image { 
+        max-height: 40vh; 
+        max-width: 40vw; 
+        object-fit: contain; 
+        border-radius: 12px; 
+        box-shadow: 0 0 40px rgba(0,0,0,0.6);
+        background: transparent !important;
+    }
+    .modal-full-view .btn-close-custom { 
+        position: fixed; 
+        top: 20px; 
+        right: 20px; 
+        color: #fff; 
+        font-size: 2.5rem; 
+        z-index: 10000; 
+        cursor: pointer; 
+        background: rgba(255,255,255,0.1); 
+        border: none; 
+        border-radius: 50%; 
+        width: 50px; 
+        height: 50px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        transition: 0.3s; 
+    }
+    .modal-full-view .btn-close-custom:hover { background: #d70018; transform: rotate(90deg); }
 </style>
 
 <div class="pd-section">
@@ -361,17 +412,7 @@
                 </div>
 
 
-                <!-- Image Lightbox -->
-                <div class="modal fade" id="imgLightboxModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content bg-transparent border-0">
-                            <div class="modal-body p-0 text-center position-relative">
-                                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" style="z-index:10;"></button>
-                                <img id="lightboxImg" src="" class="img-fluid rounded-4" style="max-height:85vh;" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <!-- Right: Quick Specs Summary -->
             <div class="col-lg-4">
@@ -440,17 +481,7 @@
     </div>
 </div>
 
-<!-- Image Zoom Modal (Lightbox) -->
-<div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content border-0 bg-transparent">
-            <div class="modal-body p-0 position-relative text-center">
-                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1060;"></button>
-                <img id="zoomedImg" src="" class="img-fluid rounded shadow-lg" style="max-height: 90vh; object-fit: contain;" />
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
     const productData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model, new System.Text.Json.JsonSerializerOptions { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
@@ -852,3 +883,30 @@
         to { opacity: 1; transform: translateY(0); }
     }
 </style>
+
+<!-- Modals moved to end for better layering -->
+<div class="modal fade modal-full-view" id="imgLightboxModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="btn-close-custom" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+                <img id="lightboxImg" src="" class="zoomed-image" alt="Lightbox Image" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal-full-view" id="imageZoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="btn-close-custom" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+                <img id="zoomedImg" src="" class="zoomed-image" alt="Zoomed Image" />
+            </div>
+        </div>
+    </div>
+</div>
