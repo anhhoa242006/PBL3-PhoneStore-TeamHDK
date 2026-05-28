@@ -18,5 +18,9 @@ namespace HDKmall.BLL.Interfaces
         void ToggleUserStatus(int userId);
         void ChangeUserRole(int userId, int roleId);
         IEnumerable<Role> GetAllRoles();
+
+        Task<string?> GeneratePasswordResetTokenAsync(string email);
+        bool ValidatePasswordResetToken(string email, string token);
+        bool ResetPassword(string email, string token, string newPassword);
     }
 }

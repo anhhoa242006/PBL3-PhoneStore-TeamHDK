@@ -13,10 +13,12 @@ namespace HDKmall.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
+        private readonly IEmailService _emailService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IEmailService emailService)
         {
             _accountService = accountService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -156,6 +158,80 @@ namespace HDKmall.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult ForgotPassword() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var token = await _accountService.GeneratePasswordResetTokenAsync(model.Email);
+            if (token == null)
+            {
+                // Không hiển thị lỗi chi tiết để bảo mật, chỉ chuyển hướng sang trang xác nhận.
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+
+            var callbackUrl = Url.Action(
+                "ResetPassword",
+                "Account",
+                new { email = model.Email, token },
+                protocol: HttpContext.Request.Scheme);
+
+            var subject = "Đặt lại mật khẩu HDKmall";
+            var message = $@"
+                <h3>Yêu cầu đặt lại mật khẩu</h3>
+                <p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản {model.Email}.</p>
+                <p>Vui lòng click vào liên kết bên dưới để tạo mật khẩu mới. Liên kết này sẽ hết hạn sau 15 phút.</p>
+                <p><a href='{callbackUrl}'>Đặt lại mật khẩu</a></p>
+                <br>
+                <p>Nếu bạn không yêu cầu, vui lòng bỏ qua email này.</p>";
+
+            await _emailService.SendEmailAsync(model.Email, subject, message);
+
+            return RedirectToAction("ForgotPasswordConfirmation");
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation() => View();
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (!_accountService.ValidatePasswordResetToken(email, token))
+            {
+                TempData["ErrorMessage"] = "Liên kết đã hết hạn hoặc không hợp lệ.";
+                return RedirectToAction("Login");
+            }
+
+            var model = new ResetPasswordVM { Email = email, Token = token };
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var success = _accountService.ResetPassword(model.Email, model.Token, model.NewPassword);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Liên kết đã hết hạn hoặc không hợp lệ.");
+                return View(model);
+            }
+
+            return RedirectToAction("ResetPasswordConfirmation");
+        }
+
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation() => View();
 
         public async Task<IActionResult> Logout()
         {

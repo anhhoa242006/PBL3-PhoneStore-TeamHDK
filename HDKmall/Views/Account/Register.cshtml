@@ -1,4 +1,4 @@
-﻿@model HDKmall.ViewModels.RegisterVM
+@model HDKmall.ViewModels.RegisterVM
 @{
     ViewData["Title"] = "Đăng ký - HDKmall";
 }
@@ -46,8 +46,8 @@
                 <div class="form-group mb-3">
                     <label class="form-label" asp-for="Password">Mật khẩu <span class="required">*</span></label>
                     <div class="input-password-wrapper" style="position: relative;">
-                        <input asp-for="Password" class="form-input" placeholder="Ít nhất 6 ký tự" id="reg-password" value="@Model?.Password" />
-                        <button type="button" class="toggle-password" onclick="togglePassword('reg-password', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer;">👁</button>
+                        <input asp-for="Password" class="form-input" placeholder="Ít nhất 6 ký tự" value="@Model?.Password" />
+                        <button type="button" class="toggle-password" onclick="togglePassword('Password', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer;">👁</button>
                     </div>
                     <span asp-validation-for="Password" class="form-error" style="color:red; display:block; margin-top:5px;"></span>
                 </div>
@@ -55,15 +55,15 @@
                 <div class="form-group mb-4">
                     <label class="form-label" asp-for="ConfirmPassword">Xác nhận mật khẩu <span class="required">*</span></label>
                     <div class="input-password-wrapper" style="position: relative;">
-                        <input asp-for="ConfirmPassword" class="form-input" placeholder="Nhập lại mật khẩu" id="reg-confirm" value="@Model?.ConfirmPassword" />
-                        <button type="button" class="toggle-password" onclick="togglePassword('reg-confirm', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer;">👁</button>
+                        <input asp-for="ConfirmPassword" class="form-input" placeholder="Nhập lại mật khẩu" value="@Model?.ConfirmPassword" />
+                        <button type="button" class="toggle-password" onclick="togglePassword('ConfirmPassword', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer;">👁</button>
                     </div>
                     <span asp-validation-for="ConfirmPassword" class="form-error" style="color:red; display:block; margin-top:5px;"></span>
                 </div>
 
                 <div class="form-group mb-4">
                     <label class="form-check" style="display:flex; gap:10px; align-items:center;">
-                        <input type="checkbox" id="reg-terms" required />
+                        <input type="checkbox" id="reg-terms" name="AgreeToTerms" value="true" />
                         <span>Tôi đồng ý với <a href="#">điều khoản sử dụng</a> và <a href="#">chính sách bảo mật</a></span>
                     </label>
                 </div>

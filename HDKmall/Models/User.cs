@@ -16,5 +16,8 @@ namespace HDKmall.Models
 
         public bool IsActive { get; set; }
         public DateTime? CreatedAt { get; set; }
+
+        public string? ResetPasswordToken { get; set; }
+        public DateTime? ResetPasswordTokenExpiry { get; set; }
     }
 }

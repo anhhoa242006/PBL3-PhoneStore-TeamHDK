@@ -11,10 +11,11 @@ namespace HDKmall.ViewModels
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại")]
-        [RegularExpression(@"^(0[3-9])\d{8}$", ErrorMessage = "Số điện thoại không hợp lệ")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải bao gồm 10 chữ số")]
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập Mật khẩu")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
 

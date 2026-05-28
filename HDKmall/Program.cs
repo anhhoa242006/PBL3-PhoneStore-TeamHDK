@@ -73,6 +73,11 @@ builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IAIChatService, AIChatService>();
+
+// Cấu hình EmailSettings và IEmailService
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 builder.Services.AddMemoryCache();
 
 
@@ -110,6 +115,23 @@ using (var scope = app.Services.CreateScope())
                                AND name = 'IsActive')
                 BEGIN
                     ALTER TABLE [dbo].[Products] ADD [IsActive] bit NOT NULL DEFAULT 1;
+                END");
+
+            // Tự động thêm các cột Quên mật khẩu cho bảng Users nếu chưa có
+            context.Database.ExecuteSqlRaw(@"
+                IF NOT EXISTS (SELECT * FROM sys.columns 
+                               WHERE object_id = OBJECT_ID(N'[dbo].[Users]') 
+                               AND name = 'ResetPasswordToken')
+                BEGIN
+                    ALTER TABLE [dbo].[Users] ADD [ResetPasswordToken] nvarchar(max) NULL;
+                END");
+
+            context.Database.ExecuteSqlRaw(@"
+                IF NOT EXISTS (SELECT * FROM sys.columns 
+                               WHERE object_id = OBJECT_ID(N'[dbo].[Users]') 
+                               AND name = 'ResetPasswordTokenExpiry')
+                BEGIN
+                    ALTER TABLE [dbo].[Users] ADD [ResetPasswordTokenExpiry] datetime2 NULL;
                 END");
 
     }

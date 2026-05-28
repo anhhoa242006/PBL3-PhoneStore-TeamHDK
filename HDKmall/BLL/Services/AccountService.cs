@@ -232,5 +232,51 @@ namespace HDKmall.BLL.Services
         {
             return _userRepository.GetAllRoles();
         }
+
+        public async Task<string?> GeneratePasswordResetTokenAsync(string email)
+        {
+            var user = _userRepository.GetUserByEmail(email);
+            if (user == null || !user.IsActive)
+            {
+                return null;
+            }
+
+            var token = Guid.NewGuid().ToString();
+            user.ResetPasswordToken = token;
+            user.ResetPasswordTokenExpiry = DateTime.Now.AddMinutes(15);
+            
+            _userRepository.UpdateUser(user);
+            _userRepository.SaveChanges();
+
+            return await Task.FromResult(token);
+        }
+
+        public bool ValidatePasswordResetToken(string email, string token)
+        {
+            var user = _userRepository.GetUserByEmail(email);
+            if (user == null || user.ResetPasswordToken != token || user.ResetPasswordTokenExpiry == null || user.ResetPasswordTokenExpiry < DateTime.Now)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool ResetPassword(string email, string token, string newPassword)
+        {
+            var user = _userRepository.GetUserByEmail(email);
+            if (user == null || user.ResetPasswordToken != token || user.ResetPasswordTokenExpiry == null || user.ResetPasswordTokenExpiry < DateTime.Now)
+            {
+                return false;
+            }
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.ResetPasswordToken = null;
+            user.ResetPasswordTokenExpiry = null;
+
+            _userRepository.UpdateUser(user);
+            _userRepository.SaveChanges();
+            
+            return true;
+        }
     }
 }
