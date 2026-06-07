@@ -19,8 +19,7 @@ packages/
 Thumbs.db
 
 ## Security & Secrets (BẮT BUỘC CHẶN ĐỂ BẢO MẬT)
-# Chặn file cấu hình chứa Key thật
-HDKmall/appsettings.json
+# Chặn file cấu hình chứa Key thật (giữ lại file template appsettings.json)
 HDKmall/appsettings.Development.json
 
 # Chặn thư mục chứa User Secrets của .NET

@@ -43,7 +43,7 @@
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light text-primary border shadow-sm rounded-3 me-1" title="Sửa">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xoá danh mục này?');">
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="confirmDelete(event, this, 'Xác nhận xóa?', 'Bạn có chắc chắn muốn xóa danh mục này?');">
                                     <button type="submit" class="btn btn-sm btn-light text-danger border shadow-sm rounded-3" title="Xoá">
                                         <i class="bi bi-trash"></i>
                                     </button>

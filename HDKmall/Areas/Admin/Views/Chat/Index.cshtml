@@ -135,7 +135,8 @@
 
         async function deleteConversation() {
             if (!selectedUserId) return;
-            if (!confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử hội thoại với khách hàng này không?')) return;
+            const confirmed = await modernConfirm('Xác nhận xóa?', 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử hội thoại với khách hàng này không?');
+            if (!confirmed) return;
 
             try {
                 const res = await fetch(`/Admin/Chat/DeleteHistory?userId=${selectedUserId}`, {
@@ -143,14 +144,13 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    alert('Đã xóa hội thoại thành công.');
                     location.reload();
                 } else {
-                    alert('Lỗi khi xóa hội thoại.');
+                    Swal.fire('Lỗi', 'Lỗi khi xóa hội thoại.', 'error');
                 }
             } catch (e) {
                 console.error(e);
-                alert('Lỗi kết nối server.');
+                Swal.fire('Lỗi', 'Lỗi kết nối server.', 'error');
             }
         }
     </script>

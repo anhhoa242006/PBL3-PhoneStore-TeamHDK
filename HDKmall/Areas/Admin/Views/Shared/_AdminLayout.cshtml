@@ -359,6 +359,15 @@
             });
             return result.isConfirmed;
         }
+
+        // Global Helper for form deletion confirmation
+        async function confirmDelete(event, form, title = 'Xác nhận xóa?', text = 'Bạn có chắc chắn muốn xóa không?') {
+            event.preventDefault();
+            const confirmed = await modernConfirm(title, text);
+            if (confirmed) {
+                form.submit();
+            }
+        }
     </script>
     @RenderSection("Scripts", required: false)
 </body>

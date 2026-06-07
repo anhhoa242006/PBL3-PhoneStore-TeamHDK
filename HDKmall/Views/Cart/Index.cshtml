@@ -20,7 +20,19 @@
     .cps-btn-delete { background: none; border: none; padding: 0; color: #999; cursor: pointer; transition: all 0.2s; }
     .cps-btn-delete:hover { color: #d70018; }
     .cps-total-group { font-size: 15px; color: #444; }
-    .cps-fixed-bottom { position: sticky; bottom: 0; background: #fff; z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
+    .cps-fixed-bottom {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 680px;
+        background: #fff;
+        z-index: 1010;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
+        border-radius: 16px 16px 0 0 !important;
+        border-top: 1px solid #eee;
+    }
     .cps-checkbox { width: 20px; height: 20px; accent-color: #d70018; cursor: pointer; flex-shrink: 0; }
     .cps-select-all-bar { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 10px 16px; }
     .cps-item-subtotal { font-size: 14px; color: #d70018; font-weight: 600; white-space: nowrap; }
@@ -115,6 +127,9 @@
                         </div>
                     }
                 </div>
+
+                <!-- Spacer to prevent content overlap with fixed bottom bar -->
+                <div style="height: 150px;"></div>
 
                 <!-- Total Bottom Bar -->
                 <div class="cps-card p-3 cps-fixed-bottom border-top-0 rounded-bottom-0 rounded-top-4">

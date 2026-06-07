@@ -121,12 +121,13 @@
                 <thead class="table-light text-secondary">
                     <tr>
                         <th class="px-4 py-3 border-0">Đơn hàng</th>
-                        <th class="py-3 border-0">Khách hàng</th>
+                        <th class="py-3 border-0">Thông tin khách hàng</th>
+                        <th class="py-3 border-0">Chi tiết sản phẩm</th>
                         <th class="py-3 border-0">Ngày đặt</th>
                         <th class="py-3 border-0">Thanh toán</th>
                         <th class="py-3 border-0 text-end">Tổng tiền</th>
                         <th class="py-3 border-0">Trạng thái</th>
-                        <th class="px-4 py-3 border-0 text-center">Cập nhật</th>
+                        <th class="px-4 py-3 border-0 text-end">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -157,8 +158,39 @@
                                         </div>
                                         <div>
                                             <div class="fw-semibold text-dark" style="font-size:14px;">@(order.User?.FullName ?? "-")</div>
-                                            <div class="text-muted" style="font-size:12px;">@(order.User?.Email ?? "")</div>
+                                            <div class="text-muted" style="font-size:12px;">
+                                                <i class="bi bi-telephone me-1"></i>@(order.User?.PhoneNumber ?? "-")
+                                            </div>
+                                            <div class="text-muted text-wrap" style="font-size:12px; max-width: 220px;" title="@order.Address">
+                                                <i class="bi bi-geo-alt me-1"></i>@order.Address
+                                            </div>
                                         </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column gap-1">
+                                        @if (order.OrderDetails != null && order.OrderDetails.Any())
+                                        {
+                                            foreach (var detail in order.OrderDetails)
+                                            {
+                                                <div class="small text-dark d-flex align-items-start gap-1">
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-1.5 py-0.5" style="font-size: 10px;">x@(detail.Quantity)</span>
+                                                    <div class="text-wrap" style="max-width: 220px; font-size: 13px;">
+                                                        @(detail.Product?.Name ?? "Sản phẩm")
+                                                        @if (detail.ProductVariant?.ProductVersion != null || !string.IsNullOrEmpty(detail.ProductVariant?.Color))
+                                                        {
+                                                            <div class="text-muted small">
+                                                                (@(detail.ProductVariant?.ProductVersion?.Name ?? "") @(detail.ProductVariant?.Color ?? ""))
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">-</span>
+                                        }
                                     </div>
                                 </td>
                                 <td>
@@ -176,29 +208,35 @@
                                         <i class="bi @badgeIcon me-1" style="font-size:10px;"></i>@badgeText
                                     </span>
                                 </td>
-                                <td class="px-4 text-center">
-                                    <form asp-area="Admin" asp-controller="Order" asp-action="UpdateStatus" method="post"
-                                          class="d-flex gap-1 align-items-center justify-content-center">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@order.Id" />
-                                        <select name="status" class="form-select form-select-sm rounded-3 border-0 bg-light" style="width:130px;">
-                                            @foreach (var s in statuses)
-                                            {
-                                                var lbl = statusLabels.ContainsKey(s) ? statusLabels[s] : s;
-                                                if (order.Status == s)
+                                <td class="px-4 text-end">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        <form asp-area="Admin" asp-controller="Order" asp-action="UpdateStatus" method="post"
+                                              class="d-flex gap-1 align-items-center mb-0">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@order.Id" />
+                                            <select name="status" class="form-select form-select-sm rounded-3 border bg-light py-1" style="width:115px; font-size: 13px;">
+                                                @foreach (var s in statuses)
                                                 {
-                                                    <option value="@s" selected>@lbl</option>
+                                                    var lbl = statusLabels.ContainsKey(s) ? statusLabels[s] : s;
+                                                    if (order.Status == s)
+                                                    {
+                                                        <option value="@s" selected>@lbl</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@s">@lbl</option>
+                                                    }
                                                 }
-                                                else
-                                                {
-                                                    <option value="@s">@lbl</option>
-                                                }
-                                            }
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-danger rounded-3 shadow-sm px-2">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                                    </form>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-danger rounded-3 shadow-sm px-2 py-1" title="Cập nhật trạng thái">
+                                                <i class="bi bi-check-lg"></i>
+                                            </button>
+                                        </form>
+                                        <a asp-area="Admin" asp-controller="Order" asp-action="Detail" asp-route-id="@order.Id" 
+                                           class="btn btn-sm btn-light text-primary border shadow-sm rounded-3 py-1 px-2 d-flex align-items-center gap-1" title="Xem chi tiết đơn hàng" style="font-size: 13px;">
+                                            <i class="bi bi-eye-fill"></i> Chi tiết
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -206,7 +244,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
+                            <td colspan="8" class="text-center py-5 text-muted">
                                 <div class="fs-1 mb-3">📦</div>
                                 <h5>Chưa có đơn hàng nào</h5>
                                 <p>Các đơn hàng sẽ xuất hiện tại đây khi khách đặt mua.</p>

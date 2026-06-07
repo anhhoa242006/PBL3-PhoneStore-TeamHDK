@@ -353,8 +353,8 @@
             }
         });
 
-        function toggleDeleteImage(index) {
-            if(confirm("Bạn có chắc muốn xóa ảnh này khỏi bộ sưu tập?")) {
+        async function toggleDeleteImage(index) {
+            if(await modernConfirm("Xác nhận xóa?", "Bạn có chắc muốn xóa ảnh này khỏi bộ sưu tập?")) {
                 const container = document.getElementById(`galleryImg_${index}`);
                 const input = document.getElementById(`isDel_${index}`);
                 if (container && input) {
@@ -364,8 +364,8 @@
             }
         }
 
-        function deleteMainImage() {
-            if(confirm("Bạn có chắc muốn xóa ảnh đại diện này?")) {
+        async function deleteMainImage() {
+            if(await modernConfirm("Xác nhận xóa?", "Bạn có chắc muốn xóa ảnh đại diện này?")) {
                 const input = document.getElementById("mainImageUrl");
                 const preview = document.getElementById("mainImagePreview");
                 if (input) input.value = "";

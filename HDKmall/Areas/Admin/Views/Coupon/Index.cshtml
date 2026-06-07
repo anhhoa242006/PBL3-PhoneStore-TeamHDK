@@ -115,7 +115,7 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <form asp-area="Admin" asp-controller="Coupon" asp-action="Delete" method="post" class="d-inline"
-                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?');">
+                                          onsubmit="confirmDelete(event, this, 'Xác nhận xóa?', 'Bạn có chắc chắn muốn xóa mã giảm giá này?');">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@coupon.Id" />
                                         <button type="submit" class="btn btn-sm btn-light text-danger border shadow-sm rounded-3" title="Xóa">
