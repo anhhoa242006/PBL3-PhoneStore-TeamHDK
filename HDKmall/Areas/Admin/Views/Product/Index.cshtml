@@ -71,7 +71,8 @@
                                              alt="@item.Name"
                                              class="rounded-3 shadow-sm border"
                                              style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;" 
-                                             data-preview-src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/img/Product_Default.jpg" : item.ImageUrl)" />
+                                             data-preview-src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/img/Product_Default.jpg" : item.ImageUrl)"
+                                             onerror="this.onerror=null; this.src='/img/Product_Default.jpg';" />
                                         <div class="ms-3">
                                             <div class="fw-bold text-dark text-wrap" style="max-width: 250px;">@item.Name</div>
                                         </div>
