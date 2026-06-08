@@ -70,7 +70,7 @@
                             }
                         </div>
                         <div class="w-50 h-100 d-flex justify-content-center align-items-center py-3">
-                            <img src="@(string.IsNullOrEmpty(banner.ImageUrl) ? "/img/promo_default.jpg" : banner.ImageUrl)" class="img-fluid" style="max-height: 100%; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2));" alt="@banner.Title" onerror="this.onerror=null; this.src='/img/promo_default.jpg';">
+                            <img src="@banner.ImageUrl" class="img-fluid" style="max-height: 100%; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2));" alt="@banner.Title">
                         </div>
                     </div>
                     <!-- Abstract background shape -->

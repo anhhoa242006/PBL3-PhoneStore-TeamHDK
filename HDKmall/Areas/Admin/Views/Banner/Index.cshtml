@@ -48,8 +48,8 @@
                             @if (!string.IsNullOrEmpty(banner.ImageUrl))
                             {
                                 <div class="banner-img-wrapper" style="height:180px; overflow:hidden; position:relative;">
-                                    <img src="@(string.IsNullOrEmpty(banner.ImageUrl) ? "/img/promo_default.jpg" : banner.ImageUrl)" alt="@banner.Title"
-                                         style="width:100%; height:100%; object-fit:cover; transition: transform 0.3s ease;" class="banner-img" onerror="this.onerror=null; this.src='/img/promo_default.jpg';" />
+                                    <img src="@banner.ImageUrl" alt="@banner.Title"
+                                         style="width:100%; height:100%; object-fit:cover; transition: transform 0.3s ease;" class="banner-img" />
                                     <div class="banner-overlay" style="position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 60%);"></div>
                                 </div>
                             }

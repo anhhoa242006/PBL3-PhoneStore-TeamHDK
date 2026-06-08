@@ -196,7 +196,7 @@
         <div class="promo-banner-container">
             @if (activePromotion != null && !string.IsNullOrEmpty(activePromotion.BannerUrl))
             {
-                <img src="@activePromotion.BannerUrl" class="promo-banner-img" alt="@activePromotion.Name" onerror="this.onerror=null; this.src='/img/promo_default.jpg';" />
+                <img src="@activePromotion.BannerUrl" class="promo-banner-img" alt="@activePromotion.Name" />
                 <div class="promo-banner-content">
                     <h1 class="display-4 fw-black mb-2 text-white" style="text-shadow: 0 2px 10px rgba(0,0,0,0.3);">@activePromotion.Name</h1>
                     <p class="fs-5 opacity-90 text-white" style="text-shadow: 0 1px 5px rgba(0,0,0,0.3);">@activePromotion.Description</p>
@@ -265,7 +265,7 @@
                             </button>
 
                             <a href="/product/@(string.IsNullOrEmpty(item.Slug) ? HDKmall.Helpers.SlugHelper.GenerateSlug(item.Name) : item.Slug)@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" class="promo-img-box">
-                                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/img/default.png" : item.ImageUrl)" alt="@item.Name" onerror="this.onerror=null; this.src='/img/default.png';">
+                                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/img/default.png" : item.ImageUrl)" alt="@item.Name" onerror="this.src='/img/default.png'">
                             </a>
                             <div class="card-body p-3 pt-0 d-flex flex-column">
                                 <div class="text-muted small mb-1">@item.BrandName</div>

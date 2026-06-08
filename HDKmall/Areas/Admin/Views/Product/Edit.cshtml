@@ -103,7 +103,7 @@
                             @if (!string.IsNullOrEmpty(Model.ImageUrl))
                             {
                                 <div class="mt-2 position-relative d-inline-block" id="mainImagePreview">
-                                    <img src="@Model.ImageUrl" style="max-width: 200px; max-height: 200px; object-fit: contain !important; background: #f8f9fa;" class="rounded border" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';" />
+                                    <img src="@Model.ImageUrl" style="max-width: 200px; max-height: 200px; object-fit: contain !important; background: #f8f9fa;" class="rounded border" />
                                     <input type="hidden" asp-for="ImageUrl" id="mainImageUrl" />
                                     <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle" style="width:24px; height:24px; padding:0; line-height:1;" onclick="deleteMainImage()">
                                         <i class="bi bi-x small"></i>
@@ -125,7 +125,7 @@
                                     @for (int i = 0; i < Model.ExistingImages.Count; i++)
                                     {
                                         <div class="position-relative image-container" id="galleryImg_@i" style="width:80px; height:80px;">
-                                            <img src="@Model.ExistingImages[i].ImageUrl" class="rounded-3 border" style="width: 100%; height: 100%; object-fit: contain !important; background: #f8f9fa;" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';" />
+                                            <img src="@Model.ExistingImages[i].ImageUrl" class="rounded-3 border" style="width: 100%; height: 100%; object-fit: contain !important; background: #f8f9fa;" />
                                             <input type="hidden" name="ExistingImages[@i].Id" value="@Model.ExistingImages[i].Id" />
                                             <input type="hidden" name="ExistingImages[@i].ImageUrl" value="@Model.ExistingImages[i].ImageUrl" />
                                             <input type="hidden" name="ExistingImages[@i].PublicId" value="@Model.ExistingImages[i].PublicId" />
@@ -183,7 +183,7 @@
                                             @if (!string.IsNullOrEmpty(Model.Versions[v].ImageUrl))
                                             {
                                                 <div class="mt-1 position-relative d-inline-block" id="vImgPreview_@v">
-                                                    <img src="@Model.Versions[v].ImageUrl" style="width: 50px; height: 50px; object-fit: contain; background: #f8f9fa;" class="rounded border" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';" />
+                                                    <img src="@Model.Versions[v].ImageUrl" style="width: 50px; height: 50px; object-fit: contain; background: #f8f9fa;" class="rounded border" />
                                                     <input type="hidden" name="Versions[@v].ImageUrl" value="@Model.Versions[v].ImageUrl" id="vImgUrl_@v" />
                                                     <button type="button" class="btn btn-xs btn-danger position-absolute top-0 end-0 rounded-circle p-0 shadow-sm" style="width:20px; height:20px; margin-top:-8px; margin-right:-8px; z-index:10;" onclick="clearImageUrl('vImgUrl_@v', 'vImgPreview_@v')" title="Xóa ảnh">×</button>
                                                     <div id="vImgDelBadge_@v" class="position-absolute bottom-0 start-0 bg-danger text-white tiny-text px-1 rounded" style="display:none; font-size:10px;">Xóa</div>
@@ -208,7 +208,7 @@
                                                             @if (!string.IsNullOrEmpty(variant.ImageUrl))
                                                             {
                                                                 <div class="mt-1 position-relative d-inline-block" id="vrImgPreview_@(v)_@(vr)">
-                                                                    <img src="@variant.ImageUrl" style="width: 40px; height: 40px; object-fit: contain; background: #f8f9fa;" class="rounded border" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';" />
+                                                                    <img src="@variant.ImageUrl" style="width: 40px; height: 40px; object-fit: contain; background: #f8f9fa;" class="rounded border" />
                                                                     <input type="hidden" name="Versions[@v].Variants[@vr].ImageUrl" value="@variant.ImageUrl" id="vrImgUrl_@(v)_@(vr)" />
                                                                     <button type="button" class="btn btn-xs btn-danger position-absolute top-0 end-0 rounded-circle p-0 shadow-sm" style="width:18px; height:18px; margin-top:-6px; margin-right:-6px; z-index:10;" onclick="clearImageUrl('vrImgUrl_@(v)_@(vr)', 'vrImgPreview_@(v)_@(vr)')" title="Xóa ảnh">×</button>
                                                                 </div>
@@ -281,7 +281,7 @@
                                                 @if (!string.IsNullOrEmpty(variant.ImageUrl))
                                                 {
                                                     <div class="mt-1 position-relative d-inline-block" id="clrImgPreview_@vr">
-                                                        <img src="@variant.ImageUrl" style="width: 40px; height: 40px; object-fit: contain; background: #f8f9fa;" class="rounded border" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';" />
+                                                        <img src="@variant.ImageUrl" style="width: 40px; height: 40px; object-fit: contain; background: #f8f9fa;" class="rounded border" />
                                                         <input type="hidden" name="Versions[0].Variants[@vr].ImageUrl" value="@variant.ImageUrl" id="clrImgUrl_@vr" />
                                                         <button type="button" class="btn btn-xs btn-danger position-absolute top-0 end-0 rounded-circle p-0 shadow-sm" style="width:18px; height:18px; margin-top:-6px; margin-right:-6px; z-index:10;" onclick="clearImageUrl('clrImgUrl_@vr', 'clrImgPreview_@vr')" title="Xóa ảnh">×</button>
                                                     </div>
