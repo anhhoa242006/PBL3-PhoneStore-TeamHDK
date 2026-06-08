@@ -154,7 +154,7 @@
                             }
                             <a href="/product/@(string.IsNullOrEmpty(item.Slug) ? HDKmall.Helpers.SlugHelper.GenerateSlug(item.Name) : item.Slug)@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" class="img-box d-block text-center text-decoration-none" style="height:180px;">
                                 <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/img/Product_Default.jpg" : item.ImageUrl)"
-                                     alt="@item.Name" style="max-height:100%; object-fit:contain; display:inline-block;" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';">
+                                     alt="@item.Name" style="max-height:100%; object-fit:contain; display:inline-block;" onerror="this.src='/img/Product_Default.jpg'">
                             </a>
                             <div class="p-3 d-flex flex-column flex-grow-1">
                                 <div class="text-muted" style="font-size:12px; margin-bottom:4px;">@item.BrandName</div>

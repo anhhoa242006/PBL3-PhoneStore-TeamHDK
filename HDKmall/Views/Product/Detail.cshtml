@@ -135,7 +135,7 @@
             <div class="col-lg-5 mb-4">
                 <div class="glass-card p-2">
                     <div class="gallery-main-wrapper" onclick="openZoomModal()">
-                        <img id="mainDisplayImg" src="@(defaultVersion?.ImageUrl ?? Model.ImageUrl ?? "/img/Product_Default.jpg")" class="gallery-main" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';" />
+                        <img id="mainDisplayImg" src="@(defaultVersion?.ImageUrl ?? Model.ImageUrl ?? "/img/Product_Default.jpg")" class="gallery-main" />
                     </div>
                     <div class="thumb-scroll" id="galleryThumbs">
                         <!-- Thumbs will be injected by JS based on selected version -->
@@ -441,7 +441,7 @@
                                 <a href="/product/@(item.Slug ?? item.Id.ToString())@(item.VersionId.HasValue ? "?versionId=" + item.VersionId : "")" 
                                    class="img-box d-block text-center p-3" style="height:180px; background:#fff;">
                                     <img src="@(item.ImageUrl ?? "/img/Product_Default.jpg")" class="img-fluid" 
-                                         style="max-height:100%; object-fit:contain;" alt="@item.Name" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';">
+                                         style="max-height:100%; object-fit:contain;" alt="@item.Name" onerror="this.src='/img/Product_Default.jpg'">
                                 </a>
                                 <div class="p-3 d-flex flex-column flex-grow-1">
                                     <div class="text-muted mb-1" style="font-size:11px;">@(item.BrandName ?? "Chính hãng")</div>

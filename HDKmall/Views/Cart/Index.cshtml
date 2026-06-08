@@ -92,7 +92,7 @@
                                     @{
                                         string imgUrl = item.Variant?.ProductVersion?.ImageUrl ?? item.Product.ImageUrl;
                                     }
-                                    <img src="@ImageHelper.GetImageUrl(imgUrl)" alt="@item.Product.Name" class="img-fluid" style="max-height: 100%; object-fit: contain;" onerror="this.onerror=null; this.src='/img/default.png';">
+                                    <img src="@ImageHelper.GetImageUrl(imgUrl)" alt="@item.Product.Name" class="img-fluid" style="max-height: 100%; object-fit: contain;" onerror="this.src='/img/default.png'">
                                 </div>
 
                                 <!-- Product Info -->
@@ -177,7 +177,7 @@
                         <div class="col">
                             <div class="pl-product-card h-100 shadow-sm border rounded-4 overflow-hidden" style="background:#fff;">
                                 <a href="/product/@(item.Slug ?? item.Id.ToString())" class="img-box d-block text-center p-3" style="height:180px; background:#fff;">
-                                    <img src="@(item.ImageUrl ?? "/img/Product_Default.jpg")" class="img-fluid" style="max-height:100%; object-fit:contain;" alt="@item.Name" onerror="this.onerror=null; this.src='/img/Product_Default.jpg';">
+                                    <img src="@(item.ImageUrl ?? "/img/Product_Default.jpg")" class="img-fluid" style="max-height:100%; object-fit:contain;" alt="@item.Name" onerror="this.src='/img/Product_Default.jpg'">
                                 </a>
                                 <div class="p-3 d-flex flex-column flex-grow-1">
                                     <div class="text-muted mb-1" style="font-size:11px;">@(item.BrandName ?? "Chính hãng")</div>
