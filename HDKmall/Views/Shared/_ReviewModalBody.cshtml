@@ -89,7 +89,7 @@
         <label class="fw-semibold small text-muted mb-2">📷 Thêm hình ảnh (không bắt buộc)</label>
         @if (existing?.ImageUrl != null) {
             <div class="mb-2">
-                <img src="@existing.ImageUrl" class="rounded-3 border" style="height:70px; width:70px; object-fit:cover;" />
+                <img src="@existing.ImageUrl" class="rounded-3 border" style="height:70px; width:70px; object-fit:cover;" onerror="this.onerror=null; this.src='/img/default.png';" />
                 <small class="text-muted ms-2">Ảnh hiện tại. Upload mới để thay thế.</small>
             </div>
         }

@@ -392,7 +392,7 @@
                                                 <img src="@review.ImageUrl" class="rounded-3 border review-img-thumb" 
                                                      style="height:80px; width:80px; object-fit:cover; cursor:pointer;"
                                                      onclick="openImageLightbox('@review.ImageUrl')"
-                                                     alt="Ảnh đánh giá" />
+                                                     alt="Ảnh đánh giá" onerror="this.onerror=null; this.src='/img/default.png';" />
                                             </div>
                                         }
                                     </div>

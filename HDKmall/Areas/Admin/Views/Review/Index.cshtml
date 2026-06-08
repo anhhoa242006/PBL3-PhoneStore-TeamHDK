@@ -105,7 +105,7 @@
                                         @if (!string.IsNullOrEmpty(review.ImageUrl))
                                         {
                                             <a href="@review.ImageUrl" target="_blank" class="d-block">
-                                                <img src="@review.ImageUrl" class="rounded border shadow-sm" style="width: 40px; height: 40px; object-fit: cover;" />
+                                                <img src="@review.ImageUrl" class="rounded border shadow-sm" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.onerror=null; this.src='/img/default.png';" />
                                             </a>
                                         }
                                         @if (!string.IsNullOrEmpty(review.Tags))

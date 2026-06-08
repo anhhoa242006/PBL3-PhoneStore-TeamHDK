@@ -32,7 +32,7 @@
                             {
                                 <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
                                     <div class="position-relative me-3 bg-light p-2 rounded border border-white flex-shrink-0" style="width: 80px; height: 80px; display:flex; align-items:center;">
-                                        <img src="@(item.Product?.ImageUrl ?? "/img/default.png")" alt="@item.Product?.Name" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                                        <img src="@(item.Product?.ImageUrl ?? "/img/default.png")" alt="@item.Product?.Name" class="img-fluid" style="max-height: 100%; object-fit: contain;" onerror="this.onerror=null; this.src='/img/default.png';">
                                     </div>
                                     <div class="flex-grow-1">
                                         <h6 class="mb-1 text-dark fw-bold">

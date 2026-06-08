@@ -186,7 +186,7 @@
                                             : "";
                                         <div class="d-flex align-items-center bg-light p-2 rounded-3 border">
                                             <div class="position-relative me-3 bg-white p-1 rounded border border-light flex-shrink-0" style="width: 65px; height: 65px; display:flex; align-items:center;">
-                                                <img src="@(string.IsNullOrEmpty(item.Product?.ImageUrl) ? "/img/default.png" : item.Product.ImageUrl)" alt="@item.Product?.Name" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                                                <img src="@(string.IsNullOrEmpty(item.Product?.ImageUrl) ? "/img/default.png" : item.Product.ImageUrl)" alt="@item.Product?.Name" class="img-fluid" style="max-height: 100%; object-fit: contain;" onerror="this.onerror=null; this.src='/img/default.png';">
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger border border-white" style="font-size: 0.7rem;">@item.Quantity</span>
                                             </div>
                                             <div class="flex-grow-1 overflow-hidden">
