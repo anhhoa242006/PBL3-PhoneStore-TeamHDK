@@ -172,6 +172,24 @@ namespace HDKmall.BLL.Services
                         });
                     }
                 }
+
+                // Sao chép thông số kỹ thuật cho sản phẩm chỉ có màu sắc
+                if (colorVM.Specifications != null)
+                {
+                    int order = 0;
+                    foreach (var sVM in colorVM.Specifications)
+                    {
+                        if (string.IsNullOrWhiteSpace(sVM.SpecName)) continue;
+                        var spec = new ProductSpecification
+                        {
+                            ProductVersionId = defaultVersion.Id,
+                            SpecName = sVM.SpecName,
+                            SpecValue = sVM.SpecValue ?? "",
+                            DisplayOrder = sVM.DisplayOrder > 0 ? sVM.DisplayOrder : order++
+                        };
+                        _productRepository.AddSpecification(spec);
+                    }
+                }
             }
             // Mặc định: chỉ Product.Price, không cần Version/Variant (ví dụ cho các loại khác nếu có)
 
