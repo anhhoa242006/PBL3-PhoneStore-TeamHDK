@@ -686,7 +686,24 @@
                 showSuccessToast('Thêm vào giỏ hàng thành công');
                 updateCartBadge(data.cartCount);
             } else {
-                Swal.fire('Thông báo', data.message || 'Lỗi thêm vào giỏ', 'error');
+                if (data.requireLogin) {
+                    Swal.fire({
+                        title: 'Yêu cầu đăng nhập',
+                        text: data.message || 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d70018',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Đăng nhập ngay',
+                        cancelButtonText: 'Bỏ qua'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+                        }
+                    });
+                } else {
+                    Swal.fire('Thông báo', data.message || 'Lỗi thêm vào giỏ', 'error');
+                }
             }
         });
     }
@@ -720,10 +737,27 @@
                 document.body.appendChild(form);
                 form.submit();
             } else {
-                Swal.fire('Thông báo', data.message || 'Lỗi thêm vào giỏ', 'error');
+                if (data.requireLogin) {
+                    Swal.fire({
+                        title: 'Yêu cầu đăng nhập',
+                        text: data.message || 'Vui lòng đăng nhập để mua sản phẩm này',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d70018',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Đăng nhập ngay',
+                        cancelButtonText: 'Bỏ qua'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+                        }
+                    });
+                } else {
+                    Swal.fire('Thông báo', data.message || 'Lỗi thêm vào giỏ', 'error');
+                }
             }
         }).catch(() => {
-            Swal.fire('Thông báo', 'Lỗi kết nối', 'error');
+            Swal.fire('Thông báo', 'Lỗi kết nối hoặc yêu cầu đăng nhập bị từ chối', 'error');
         });
     }
 

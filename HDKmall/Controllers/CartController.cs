@@ -1,11 +1,13 @@
 using HDKmall.BLL.Interfaces;
 using HDKmall.Models;
 using HDKmall.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace HDKmall.Controllers
 {
+    [Authorize]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
@@ -23,9 +25,8 @@ namespace HDKmall.Controllers
         public IActionResult Index()
         {
             var userId = GetUserId();
-            var sessionId = GetSessionId();
 
-            var cart = _cartService.GetOrCreateCart(userId, sessionId);
+            var cart = _cartService.GetOrCreateCart(userId, null);
             if (cart == null || !cart.Items.Any())
             {
                 ViewBag.RecommendedProducts = _recommendationService.GetPersonalizedRecommendations(10);
@@ -40,16 +41,26 @@ namespace HDKmall.Controllers
 
         // POST: Cart/Add
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Add(int productId, int variantId = 0, int quantity = 1)
         {
             var userId = GetUserId();
-            var sessionId = GetSessionId();
+            if (userId == null)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", requireLogin = true });
+                }
 
-            var cart = _cartService.GetOrCreateCart(userId, sessionId);
+                TempData["error"] = "Vui lòng đăng nhập để sử dụng giỏ hàng";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var cart = _cartService.GetOrCreateCart(userId, null);
             if (cart != null)
             {
                 int cartItemId = _cartService.AddToCart(cart.Id, productId, variantId, quantity);
-                var count = _cartService.GetCartItemCount(userId, sessionId);
+                var count = _cartService.GetCartItemCount(userId, null);
 
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
@@ -77,8 +88,7 @@ namespace HDKmall.Controllers
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 var userId = GetUserId();
-                var sessionId = GetSessionId();
-                var count = _cartService.GetCartItemCount(userId, sessionId);
+                var count = _cartService.GetCartItemCount(userId, null);
                 return Json(new { success = true, cartCount = count });
             }
             return RedirectToAction(nameof(Index));
@@ -99,8 +109,7 @@ namespace HDKmall.Controllers
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 var userId = GetUserId();
-                var sessionId = GetSessionId();
-                var count = _cartService.GetCartItemCount(userId, sessionId);
+                var count = _cartService.GetCartItemCount(userId, null);
                 return Json(new { success = true, cartCount = count });
             }
             return RedirectToAction(nameof(Index));
@@ -111,8 +120,7 @@ namespace HDKmall.Controllers
         public IActionResult Clear()
         {
             var userId = GetUserId();
-            var sessionId = GetSessionId();
-            var cart = _cartService.GetOrCreateCart(userId, sessionId);
+            var cart = _cartService.GetOrCreateCart(userId, null);
 
             if (cart != null)
             {
@@ -124,11 +132,15 @@ namespace HDKmall.Controllers
 
         // GET: Cart/Count - returns item count as JSON (for badge update)
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Count()
         {
             var userId = GetUserId();
-            var sessionId = GetSessionId();
-            var count = _cartService.GetCartItemCount(userId, sessionId);
+            if (userId == null)
+            {
+                return Json(new { count = 0 });
+            }
+            var count = _cartService.GetCartItemCount(userId, null);
             return Json(new { count });
         }
 
@@ -155,16 +167,6 @@ namespace HDKmall.Controllers
             }
             return null;
         }
-
-        private string GetSessionId()
-        {
-            if (!HttpContext.Session.TryGetValue("SessionId", out byte[] sessionIdBytes))
-            {
-                var sessionId = Guid.NewGuid().ToString();
-                HttpContext.Session.SetString("SessionId", sessionId);
-                return sessionId;
-            }
-            return System.Text.Encoding.UTF8.GetString(sessionIdBytes);
-        }
     }
 }
+

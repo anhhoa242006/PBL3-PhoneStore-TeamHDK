@@ -3,12 +3,13 @@
 @inject ICartService CartService
 @{
     int? layoutUserId = null;
-    string layoutSessionId = null;
+    int cartItemCount = 0;
     var uidClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-    if (int.TryParse(uidClaim?.Value, out var parsedUid)) layoutUserId = parsedUid;
-    if (Context.Session.TryGetValue("SessionId", out byte[] sidBytes))
-        layoutSessionId = System.Text.Encoding.UTF8.GetString(sidBytes);
-    var cartItemCount = CartService.GetCartItemCount(layoutUserId, layoutSessionId);
+    if (int.TryParse(uidClaim?.Value, out var parsedUid))
+    {
+        layoutUserId = parsedUid;
+        cartItemCount = CartService.GetCartItemCount(layoutUserId, null);
+    }
 }
 <!DOCTYPE html>
 <html lang="vi">
