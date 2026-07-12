@@ -24,7 +24,14 @@ namespace HDKmall.Areas.Admin.Controllers
     // 1. Lọc theo trạng thái
     if (!string.IsNullOrEmpty(status) && status != "All")
     {
-        reviews = reviews.Where(r => r.Status == status);
+        if (status == "Showing")
+        {
+            reviews = reviews.Where(r => r.Status != "Hidden");
+        }
+        else
+        {
+            reviews = reviews.Where(r => r.Status == status);
+        }
     }
 
     // 2. Lọc theo từ khóa tìm kiếm
@@ -70,5 +77,13 @@ namespace HDKmall.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Reply(int id, string? replyText)
+        {
+            _reviewService.ReplyToReview(id, replyText);
+            TempData["Success"] = "Đã cập nhật phản hồi thành công.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

@@ -98,11 +98,11 @@ namespace HDKmall.BLL.Services
                 CategoryName = x.Product.Category?.Name,
                 BrandId = x.Product.BrandId,
                 BrandName = x.Product.Brand?.Name,
-                AverageRating = x.Version?.Reviews != null && x.Version.Reviews.Any(r => r.Status == "Approved") 
-                    ? x.Version.Reviews.Where(r => r.Status == "Approved").Average(r => r.Rating) 
+                AverageRating = x.Product.Versions != null && x.Product.Versions.SelectMany(v => v.Reviews).Any(r => r.Status != "Hidden")
+                    ? x.Product.Versions.SelectMany(v => v.Reviews).Where(r => r.Status != "Hidden").Average(r => r.Rating)
                     : 0,
-                ReviewCount = x.Version?.Reviews != null 
-                    ? x.Version.Reviews.Count(r => r.Status == "Approved")
+                ReviewCount = x.Product.Versions != null
+                    ? x.Product.Versions.SelectMany(v => v.Reviews).Count(r => r.Status != "Hidden")
                     : 0,
                 VersionName = x.Version?.Name,
                 OriginalPrice = x.Version?.OriginalPrice,
@@ -222,7 +222,7 @@ namespace HDKmall.BLL.Services
             }
 
             var allReviews = versions.SelectMany(v => v.Reviews)
-                .Where(r => r.Status == "Approved")
+                .Where(r => r.Status != "Hidden")
                 .ToList();
 
             return new ProductDetailVM
@@ -263,10 +263,10 @@ namespace HDKmall.BLL.Services
                         SpecValue = s.SpecValue,
                         DisplayOrder = s.DisplayOrder
                     }).ToList(),
-                    AverageRating = v.Reviews != null && v.Reviews.Any(r => r.Status == "Approved")
-                        ? v.Reviews.Where(r => r.Status == "Approved").Average(r => r.Rating)
+                    AverageRating = v.Reviews != null && v.Reviews.Any(r => r.Status != "Hidden")
+                        ? v.Reviews.Where(r => r.Status != "Hidden").Average(r => r.Rating)
                         : 0,
-                    ReviewCount = v.Reviews != null ? v.Reviews.Count(r => r.Status == "Approved") : 0
+                    ReviewCount = v.Reviews != null ? v.Reviews.Count(r => r.Status != "Hidden") : 0
                 }).ToList(),
                 Reviews = allReviews.Select(r => new ReviewVM
                 {
@@ -279,7 +279,10 @@ namespace HDKmall.BLL.Services
                     CreatedAt = r.CreatedAt,
                     Tags = r.Tags,
                     ImageUrl = r.ImageUrl,
-                    IsEdited = r.IsEdited
+                    IsEdited = r.IsEdited,
+                    AdminReply = r.AdminReply,
+                    AdminReplyAt = r.AdminReplyAt,
+                    ProductVersionName = r.ProductVersion?.Name ?? versions.FirstOrDefault(ver => ver.Id == r.ProductVersionId)?.Name
                 }).ToList(),
                 AverageRating = allReviews.Any() ? allReviews.Average(r => r.Rating) : 0,
                 TotalReviews = allReviews.Count,
@@ -319,11 +322,11 @@ namespace HDKmall.BLL.Services
                 CategoryName = x.Product.Category?.Name,
                 BrandId = x.Product.BrandId,
                 BrandName = x.Product.Brand?.Name,
-                AverageRating = x.Version?.Reviews != null && x.Version.Reviews.Any(r => r.Status == "Approved") 
-                    ? x.Version.Reviews.Where(r => r.Status == "Approved").Average(r => r.Rating) 
+                AverageRating = x.Product.Versions != null && x.Product.Versions.SelectMany(v => v.Reviews).Any(r => r.Status != "Hidden")
+                    ? x.Product.Versions.SelectMany(v => v.Reviews).Where(r => r.Status != "Hidden").Average(r => r.Rating)
                     : 0,
-                ReviewCount = x.Version?.Reviews != null 
-                    ? x.Version.Reviews.Count(r => r.Status == "Approved")
+                ReviewCount = x.Product.Versions != null
+                    ? x.Product.Versions.SelectMany(v => v.Reviews).Count(r => r.Status != "Hidden")
                     : 0,
                 VersionName = x.Version?.Name,
                 OriginalPrice = x.Version?.OriginalPrice,

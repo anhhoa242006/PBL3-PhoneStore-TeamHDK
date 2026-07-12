@@ -21,5 +21,6 @@ namespace HDKmall.BLL.Interfaces
         Task<Review?> EditReviewAsync(int reviewId, AddReviewVM vm, int userId);
         void ApproveReview(int id);
         void HideReview(int id);
+        void ReplyToReview(int id, string? replyText);
     }
 }

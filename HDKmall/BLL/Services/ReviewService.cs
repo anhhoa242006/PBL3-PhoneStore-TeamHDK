@@ -118,7 +118,10 @@ namespace HDKmall.BLL.Services
                 Tags = r.Tags,
                 ImageUrl = r.ImageUrl,
                 Status = r.Status,
-                IsEdited = r.IsEdited
+                IsEdited = r.IsEdited,
+                AdminReply = r.AdminReply,
+                AdminReplyAt = r.AdminReplyAt,
+                ProductVersionName = r.ProductVersion?.Name
             });
         }
 
@@ -184,6 +187,26 @@ namespace HDKmall.BLL.Services
         public void HideReview(int id)
         {
             _reviewRepository.UpdateStatus(id, "Hidden");
+        }
+
+        public void ReplyToReview(int id, string? replyText)
+        {
+            var review = _reviewRepository.GetById(id);
+            if (review != null)
+            {
+                if (string.IsNullOrWhiteSpace(replyText))
+                {
+                    review.AdminReply = null;
+                    review.AdminReplyAt = null;
+                }
+                else
+                {
+                    review.AdminReply = replyText;
+                    review.AdminReplyAt = DateTime.Now;
+                }
+                _reviewRepository.Update(review);
+                _reviewRepository.SaveChanges();
+            }
         }
     }
 }

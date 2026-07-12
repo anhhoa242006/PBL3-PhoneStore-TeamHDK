@@ -110,7 +110,9 @@ namespace HDKmall.Controllers
                 r.Comment,
                 r.ImageUrl,
                 Tags = r.Tags != null ? JsonSerializer.Deserialize<List<string>>(r.Tags) : new List<string>(),
-                CreatedAt = r.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                CreatedAt = r.CreatedAt.ToString("dd/MM/yyyy HH:mm"),
+                r.AdminReply,
+                AdminReplyAt = r.AdminReplyAt.HasValue ? r.AdminReplyAt.Value.ToString("dd/MM/yyyy HH:mm") : null
             });
 
             return Json(new

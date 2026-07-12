@@ -17,13 +17,13 @@ namespace HDKmall.DAL.Repositories
 
         public IEnumerable<Product> GetAll()
         {
-            // Lightweight query — only load what's needed for listing/admin index.
-            // Reviews are NOT loaded here to avoid memory bloat.
             return _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
                 .Include(p => p.Versions)
                     .ThenInclude(v => v.Variants)
+                .Include(p => p.Versions)
+                    .ThenInclude(v => v.Reviews)
                 .ToList();
         }
 

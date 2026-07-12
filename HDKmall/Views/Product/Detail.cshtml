@@ -372,6 +372,12 @@
                                             <span class="badge bg-success-subtle text-success border border-success-subtle small" style="font-size:10px;">
                                                 <i class="bi bi-patch-check-fill me-1"></i>Đã mua tại HDKmall
                                             </span>
+                                            @if (!string.IsNullOrEmpty(review.ProductVersionName) && !review.ProductVersionName.Equals("Mặc định", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small" style="font-size:10px;">
+                                                    Phân loại: @review.ProductVersionName
+                                                </span>
+                                            }
                                         </div>
                                         <div class="text-warning small mb-2">
                                             @for(int s=1;s<=5;s++){ <i class="bi @(s<=review.Rating ? "bi-star-fill" : "bi-star")"></i> }
@@ -393,6 +399,18 @@
                                                      style="height:80px; width:80px; object-fit:cover; cursor:pointer;"
                                                      onclick="openImageLightbox('@review.ImageUrl')"
                                                      alt="Ảnh đánh giá" />
+                                            </div>
+                                        }
+                                        <!-- Admin Reply -->
+                                        @if (!string.IsNullOrEmpty(review.AdminReply)) {
+                                            <div class="admin-reply-box bg-light rounded-3 p-3 mt-3 border-start border-danger border-3 shadow-sm">
+                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                    <span class="badge bg-danger text-white small" style="font-size:10.5px; font-weight:600; padding:4px 8px;">Phản hồi từ HDKmall</span>
+                                                     @if (review.AdminReplyAt.HasValue) {
+                                                         <span class="text-muted" style="font-size:11px;">@review.AdminReplyAt.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                                     }
+                                                </div>
+                                                <p class="text-dark small mb-0 lh-base" style="font-size:13.5px;">@review.AdminReply</p>
                                             </div>
                                         }
                                     </div>
@@ -568,8 +586,7 @@
     }
 
     function updateReviewStats() {
-        const vId = currentVersion.Id;
-        const reviews = productData.Reviews.filter(r => r.ProductVersionId === vId);
+        const reviews = productData.Reviews;
         // Update Title
         const titleEl = document.getElementById('reviewVersionTitle');
         if (titleEl) {
@@ -811,9 +828,6 @@
         const items = Array.from(document.querySelectorAll('.review-item'));
         let visible = items;
 
-        // Filter by Version (STRICT)
-        visible = items.filter(el => parseInt(el.dataset.versionId) === currentVersion.Id);
-
         // Filter by Stars/Image
         if (currentStarFilter === -1) {
             visible = visible.filter(el => el.dataset.hasImg === '1');
@@ -835,11 +849,14 @@
 
         if (visible.length === 0) {
             if (!noMsg) {
-                const div = document.createElement('div');
-                div.id = 'filter-empty-msg';
-                div.className = 'text-center py-4 text-muted';
-                div.innerHTML = '<i class="bi bi-search" style="font-size:2rem;"></i><p class="mt-2">Không có đánh giá nào phù hợp</p>';
-                container.appendChild(div);
+                let div = document.getElementById('filter-empty-msg');
+                if (!div) {
+                    div = document.createElement('div');
+                    div.id = 'filter-empty-msg';
+                    div.className = 'text-center py-4 text-muted';
+                    div.innerHTML = '<i class="bi bi-search" style="font-size:2rem;"></i><p class="mt-2">Không có đánh giá nào phù hợp</p>';
+                    container.appendChild(div);
+                }
             }
         } else {
             const old = document.getElementById('filter-empty-msg');

@@ -98,7 +98,7 @@ namespace HDKmall.DAL.Repositories
         {
             return _context.Reviews
                 .Include(r => r.User)
-                .Where(r => r.ProductVersionId == versionId && (r.Status == "Approved" || r.Status == "Pending"))
+                .Where(r => r.ProductVersionId == versionId && r.Status != "Hidden")
                 .OrderByDescending(r => r.CreatedAt)
                 .ToList();
         }
@@ -108,7 +108,7 @@ namespace HDKmall.DAL.Repositories
             return _context.Reviews
                 .Include(r => r.User)
                 .Include(r => r.ProductVersion)
-                .Where(r => r.ProductVersion.ProductId == productId && (r.Status == "Approved" || r.Status == "Pending"))
+                .Where(r => r.ProductVersion.ProductId == productId && r.Status != "Hidden")
                 .OrderByDescending(r => r.CreatedAt)
                 .ToList();
         }

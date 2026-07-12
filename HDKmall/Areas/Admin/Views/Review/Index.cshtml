@@ -1,4 +1,5 @@
 @model IEnumerable<HDKmall.Models.Review>
+@using System.Text.Encodings.Web
 @{
     ViewData["Title"] = "Quản lý đánh giá";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -32,8 +33,7 @@
                 <input type="hidden" name="q" value="@ViewBag.Search" />
                 <select name="status" class="form-select form-select-sm bg-light border-0 rounded-pill px-3 focus-ring focus-ring-danger" onchange="this.form.submit()" style="width: 180px;">
                     <option value="All" selected="@(ViewBag.Status == "All")">Tất cả trạng thái</option>
-                    <option value="Pending" selected="@(ViewBag.Status == "Pending")">Chờ duyệt</option>
-                    <option value="Approved" selected="@(ViewBag.Status == "Approved")">Đã duyệt</option>
+                    <option value="Showing" selected="@(ViewBag.Status == "Showing")">Đang hiển thị</option>
                     <option value="Hidden" selected="@(ViewBag.Status == "Hidden")">Đã ẩn</option>
                 </select>
             </form>
@@ -99,6 +99,19 @@
                                             @review.Comment
                                         </p>
                                     }
+                                    @if (!string.IsNullOrEmpty(review.AdminReply))
+                                    {
+                                        <div class="mt-2 p-2 bg-light rounded border-start border-danger border-3 small shadow-sm" style="max-width: 220px; font-size: 11px;">
+                                            <div class="fw-bold text-danger mb-1 d-flex align-items-center gap-1">
+                                                <i class="bi bi-reply-fill"></i> Phản hồi của admin:
+                                            </div>
+                                            <div class="text-dark" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">@review.AdminReply</div>
+                                            @if (review.AdminReplyAt.HasValue)
+                                            {
+                                                <div class="text-muted text-end mt-1" style="font-size: 9.5px;">@review.AdminReplyAt.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                                            }
+                                        </div>
+                                    }
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column gap-1">
@@ -128,18 +141,14 @@
                                     </div>
                                 </td>
                                 <td>
-                                    @if (review.Status == "Pending")
-                                    {
-                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3">Chờ duyệt</span>
-                                    }
-                                    else if (review.Status == "Approved")
-                                    {
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Đã duyệt</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3">Đã ẩn</span>
-                                    }
+                                     @if (review.Status != "Hidden")
+                                     {
+                                         <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Đang hiển thị</span>
+                                     }
+                                     else
+                                     {
+                                         <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3">Đã ẩn</span>
+                                     }
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column">
@@ -149,17 +158,22 @@
                                 </td>
                                 <td class="px-4 text-end">
                                     <div class="d-flex justify-content-end gap-1">
-                                        @if (review.Status != "Approved")
+                                        <button type="button" class="btn btn-sm btn-light text-primary border shadow-sm rounded-3" 
+                                                title="Phản hồi" onclick="openReplyModal(@review.Id, '@Html.Raw(JavaScriptEncoder.Default.Encode(review.AdminReply ?? ""))')">
+                                            <i class="bi bi-reply-fill"></i>
+                                        </button>
+
+                                        @if (review.Status == "Hidden")
                                         {
                                             <form asp-area="Admin" asp-controller="Review" asp-action="Approve" method="post">
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@review.Id" />
-                                                <button type="submit" class="btn btn-sm btn-light text-success border shadow-sm rounded-3" title="Duyệt">
-                                                    <i class="bi bi-check-lg"></i>
+                                                <button type="submit" class="btn btn-sm btn-light text-success border shadow-sm rounded-3" title="Hiển thị">
+                                                    <i class="bi bi-eye"></i>
                                                 </button>
                                             </form>
                                         }
-                                        @if (review.Status != "Hidden")
+                                        else
                                         {
                                             <form asp-area="Admin" asp-controller="Review" asp-action="Hide" method="post">
                                                 @Html.AntiForgeryToken()
@@ -169,6 +183,7 @@
                                                 </button>
                                             </form>
                                         }
+
                                         <form asp-area="Admin" asp-controller="Review" asp-action="Delete" method="post"
                                               onsubmit="return false;" id="del-review-@review.Id">
                                             @Html.AntiForgeryToken()
@@ -211,3 +226,40 @@
         }
     </div>
 </div>
+
+<!-- Modal Phản hồi -->
+<div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-area="Admin" asp-controller="Review" asp-action="Reply" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="replyReviewId" />
+            <div class="modal-content shadow border-0 rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="replyModalLabel">✍️ Phản Hồi Đánh Giá</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <div class="mb-3">
+                        <label for="replyText" class="form-label fw-semibold text-secondary">Nội dung phản hồi</label>
+                        <textarea class="form-control rounded-3 focus-ring focus-ring-danger border-2" 
+                                  name="replyText" id="replyText" rows="6" 
+                                  placeholder="Nhập câu trả lời từ admin... (để trống để xóa phản hồi)"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light border px-4 rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger px-4 rounded-pill">Lưu phản hồi</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openReplyModal(id, currentReply) {
+        document.getElementById('replyReviewId').value = id;
+        document.getElementById('replyText').value = currentReply || '';
+        var myModal = new bootstrap.Modal(document.getElementById('replyModal'));
+        myModal.show();
+    }
+</script>

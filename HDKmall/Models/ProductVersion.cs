@@ -34,8 +34,8 @@ namespace HDKmall.Models
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
         [NotMapped]
-        public double AverageRating => Reviews != null && Reviews.Any(r => r.Status == "Approved") 
-            ? Reviews.Where(r => r.Status == "Approved").Average(r => r.Rating) 
+        public double AverageRating => Reviews != null && Reviews.Any(r => r.Status != "Hidden") 
+            ? Reviews.Where(r => r.Status != "Hidden").Average(r => r.Rating) 
             : 0;
     }
 }
