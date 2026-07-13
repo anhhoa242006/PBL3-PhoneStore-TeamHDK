@@ -134,6 +134,23 @@ using (var scope = app.Services.CreateScope())
                     ALTER TABLE [dbo].[Users] ADD [ResetPasswordTokenExpiry] datetime2 NULL;
                 END");
 
+            // Kiểm tra và tự động thêm các cột phản hồi của Admin cho bảng Reviews nếu chưa có
+            context.Database.ExecuteSqlRaw(@"
+                IF NOT EXISTS (SELECT * FROM sys.columns 
+                               WHERE object_id = OBJECT_ID(N'[dbo].[Reviews]') 
+                               AND name = 'AdminReply')
+                BEGIN
+                    ALTER TABLE [dbo].[Reviews] ADD [AdminReply] nvarchar(max) NULL;
+                END");
+
+            context.Database.ExecuteSqlRaw(@"
+                IF NOT EXISTS (SELECT * FROM sys.columns 
+                               WHERE object_id = OBJECT_ID(N'[dbo].[Reviews]') 
+                               AND name = 'AdminReplyAt')
+                BEGIN
+                    ALTER TABLE [dbo].[Reviews] ADD [AdminReplyAt] datetime2 NULL;
+                END");
+
     }
     catch { /* Bỏ qua nếu có lỗi hoặc đã tồn tại */ }
 }
