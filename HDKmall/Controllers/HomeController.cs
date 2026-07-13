@@ -68,6 +68,15 @@ namespace HDKmall.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null)
         {
+            var exceptionHandlerPathFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+            if (exceptionHandlerPathFeature != null)
+            {
+                var exception = exceptionHandlerPathFeature.Error;
+                ViewData["ExceptionMessage"] = exception.Message;
+                ViewData["ExceptionStackTrace"] = exception.StackTrace;
+                ViewData["ExceptionPath"] = exceptionHandlerPathFeature.Path;
+            }
+
             if (statusCode == 404)
             {
                 ViewData["ErrorTitle"] = "404 - Không tìm thấy trang";
