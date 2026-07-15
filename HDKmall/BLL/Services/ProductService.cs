@@ -298,20 +298,18 @@ namespace HDKmall.BLL.Services
                             version = new ProductVersion { ProductId = product.Id };
                             isNewVersion = true;
                         }
-                        else
-                        {
-                            version.Name = vVM.Name;
-                            // Nếu ColorsOnly, dùng giá của Product cho Version mặc định
-                            version.BasePrice = (vm.ProductType == ProductType.ColorsOnly) ? vm.Price : vVM.BasePrice;
-                            version.OriginalPrice = (vm.ProductType == ProductType.ColorsOnly) ? vm.OriginalPrice : vVM.OriginalPrice;
-                            version.Description = vVM.Description;
-                        }
                     }
                     else
                     {
-                        version = new ProductVersion { ProductId = product.Id, Name = vVM.Name, BasePrice = vVM.BasePrice, OriginalPrice = vVM.OriginalPrice, Description = vVM.Description };
+                        version = new ProductVersion { ProductId = product.Id };
                         isNewVersion = true;
                     }
+
+                    // Assign fields correctly for both new, existing, and fallback versions
+                    version.Name = vVM.Name;
+                    version.BasePrice = (vm.ProductType == ProductType.ColorsOnly) ? vm.Price : vVM.BasePrice;
+                    version.OriginalPrice = (vm.ProductType == ProductType.ColorsOnly) ? vm.OriginalPrice : vVM.OriginalPrice;
+                    version.Description = vVM.Description;
 
                     // Handle Version Image
                     if (vVM.ImageFile != null && vVM.ImageFile.Length > 0)

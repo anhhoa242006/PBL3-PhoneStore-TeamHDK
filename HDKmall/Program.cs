@@ -151,6 +151,22 @@ using (var scope = app.Services.CreateScope())
                     ALTER TABLE [dbo].[Reviews] ADD [AdminReplyAt] datetime2 NULL;
                 END");
 
+            // Sửa lỗi BasePrice = 0 hoặc OriginalPrice = 0 của các Version "Mặc định" cho các sản phẩm ColorsOnly
+            context.Database.ExecuteSqlRaw(@"
+                UPDATE pv
+                SET pv.BasePrice = p.Price
+                FROM ProductVersions pv
+                INNER JOIN Products p ON pv.ProductId = p.Id
+                WHERE p.ProductType = 2 AND pv.Name = N'Mặc định' AND (pv.BasePrice IS NULL OR pv.BasePrice <= 0)
+            ");
+
+            context.Database.ExecuteSqlRaw(@"
+                UPDATE pv
+                SET pv.OriginalPrice = p.OriginalPrice
+                FROM ProductVersions pv
+                INNER JOIN Products p ON pv.ProductId = p.Id
+                WHERE p.ProductType = 2 AND pv.Name = N'Mặc định' AND (pv.OriginalPrice IS NULL OR pv.OriginalPrice <= 0) AND p.OriginalPrice > 0
+            ");
     }
     catch { /* Bỏ qua nếu có lỗi hoặc đã tồn tại */ }
 }

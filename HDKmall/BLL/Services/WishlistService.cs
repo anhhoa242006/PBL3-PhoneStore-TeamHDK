@@ -65,11 +65,13 @@ namespace HDKmall.BLL.Services
                 Id = w.ProductId,
                 Name = w.Product.Name,
                 Slug = w.Product.Slug,
-                Price = w.ProductVersion?.BasePrice ?? w.Product.Price,
-                OriginalPrice = w.ProductVersion?.OriginalPrice,
-                DiscountPercent = w.ProductVersion != null && w.ProductVersion.OriginalPrice > 0 
-                    ? (int)Math.Round((double)(1 - (w.ProductVersion.BasePrice / w.ProductVersion.OriginalPrice)) * 100) 
-                    : 0,
+                Price = w.ProductVersion != null && w.ProductVersion.BasePrice > 0 ? w.ProductVersion.BasePrice : w.Product.Price,
+                OriginalPrice = w.ProductVersion != null && w.ProductVersion.OriginalPrice > 0 ? w.ProductVersion.OriginalPrice : w.Product.OriginalPrice,
+                DiscountPercent = (w.ProductVersion != null && w.ProductVersion.OriginalPrice > 0 && w.ProductVersion.BasePrice > 0)
+                    ? (int)Math.Round((double)(1 - (w.ProductVersion.BasePrice / w.ProductVersion.OriginalPrice.Value)) * 100)
+                    : (w.Product.OriginalPrice > 0 && w.Product.Price > 0)
+                        ? (int)Math.Round((double)(1 - (double)(w.Product.Price / w.Product.OriginalPrice.Value)) * 100)
+                        : 0,
                 ImageUrl = w.ProductVersion?.ImageUrl ?? w.Product.Images.FirstOrDefault()?.ImageUrl ?? w.Product.ImageUrl ?? "/img/default.png",
                 BrandName = w.Product.Brand?.Name ?? "",
                 VersionId = w.VersionId,

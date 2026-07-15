@@ -215,8 +215,12 @@ namespace HDKmall.BLL.Services
                     ReviewCount = p.Versions != null ? p.Versions.SelectMany(v => v.Reviews).Count() : 0,
                     VersionId = bestVersion?.Id,
                     VersionName = bestVersion?.Name,
-                    OriginalPrice = bestVersion?.OriginalPrice,
-                    DiscountPercent = bestVersion?.DiscountPercent ?? 0
+                    OriginalPrice = bestVersion?.OriginalPrice ?? p.OriginalPrice,
+                    DiscountPercent = (bestVersion != null && bestVersion.OriginalPrice > 0 && bestVersion.BasePrice > 0)
+                        ? bestVersion.DiscountPercent
+                        : (p.OriginalPrice.HasValue && p.OriginalPrice > p.Price && p.Price > 0)
+                            ? (int)Math.Round((double)(1 - (double)(p.Price / p.OriginalPrice.Value)) * 100)
+                            : 0
                 };
             }).ToList();
         }

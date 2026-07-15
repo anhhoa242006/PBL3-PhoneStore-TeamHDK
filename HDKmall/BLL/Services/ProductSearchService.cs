@@ -329,8 +329,12 @@ namespace HDKmall.BLL.Services
                     ? x.Product.Versions.SelectMany(v => v.Reviews).Count(r => r.Status != "Hidden")
                     : 0,
                 VersionName = x.Version?.Name,
-                OriginalPrice = x.Version?.OriginalPrice,
-                DiscountPercent = x.Version?.DiscountPercent ?? 0
+                OriginalPrice = x.Version?.OriginalPrice ?? x.Product.OriginalPrice,
+                DiscountPercent = x.Version != null && x.Version.OriginalPrice > 0 && x.Version.BasePrice > 0
+                    ? x.Version.DiscountPercent
+                    : (x.Product.OriginalPrice.HasValue && x.Product.OriginalPrice > x.Product.Price && x.Product.Price > 0
+                        ? (int)Math.Round((double)(1 - (double)(x.Product.Price / x.Product.OriginalPrice.Value)) * 100)
+                        : 0)
             }).ToList();
         }
     }
