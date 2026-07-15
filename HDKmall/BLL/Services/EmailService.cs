@@ -50,7 +50,12 @@ namespace HDKmall.BLL.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending email: {ex.Message}");
+                Console.WriteLine($"[SMTP ERROR] Failed to send email to {email}: {ex.Message}");
+                Console.WriteLine("================ EMAIL SIMULATION (FALLBACK) ================");
+                Console.WriteLine($"To: {email}");
+                Console.WriteLine($"Subject: {subject}");
+                Console.WriteLine($"Message:\n{htmlMessage}");
+                Console.WriteLine("=============================================================");
                 throw;
             }
         }

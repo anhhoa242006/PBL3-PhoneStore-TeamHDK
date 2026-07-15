@@ -189,9 +189,19 @@ namespace HDKmall.Controllers
                 <br>
                 <p>Nếu bạn không yêu cầu, vui lòng bỏ qua email này.</p>";
 
-            await _emailService.SendEmailAsync(model.Email, subject, message);
-
-            return RedirectToAction("ForgotPasswordConfirmation");
+            try
+            {
+                await _emailService.SendEmailAsync(model.Email, subject, message);
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ForgotPassword] SMTP error: {ex.Message}");
+                Console.WriteLine($"[DEVELOPMENT ONLY] Password Reset Link: {callbackUrl}");
+                
+                ModelState.AddModelError(string.Empty, "Không thể gửi email đặt lại mật khẩu do sự cố kết nối SMTP. Liên kết đặt lại mật khẩu đã được ghi nhận trong console hệ thống cho nhà phát triển.");
+                return View(model);
+            }
         }
 
         [HttpGet]
