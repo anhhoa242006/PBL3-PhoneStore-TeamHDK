@@ -69,7 +69,7 @@ main { flex: 1; }
   background: var(--primary);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1050;
   box-shadow: var(--shadow-md);
 }
 
