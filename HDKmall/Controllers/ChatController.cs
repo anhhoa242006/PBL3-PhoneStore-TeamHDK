@@ -43,7 +43,7 @@ namespace HDKmall.Controllers
                 SenderId = userId,
                 Message = message,
                 IsFromAdmin = false,
-                Timestamp = DateTime.Now
+                Timestamp = HDKmall.Helpers.TimeHelper.GetVietnamTime()
             };
 
             var result = await _chatService.SendMessageAsync(chatMsg);

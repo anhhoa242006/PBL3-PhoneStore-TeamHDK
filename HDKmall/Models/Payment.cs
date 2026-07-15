@@ -23,7 +23,7 @@ namespace HDKmall.Models
 
         public string? TransactionId { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = HDKmall.Helpers.TimeHelper.GetVietnamTime();
 
         public DateTime? UpdatedAt { get; set; }
     }

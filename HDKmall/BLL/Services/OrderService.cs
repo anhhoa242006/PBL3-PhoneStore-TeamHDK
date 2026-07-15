@@ -29,7 +29,7 @@ namespace HDKmall.BLL.Services
             var order = new Order
             {
                 UserId = userId,
-                OrderDate = DateTime.Now,
+                OrderDate = HDKmall.Helpers.TimeHelper.GetVietnamTime(),
                 Address = address,
                 PaymentMethod = paymentMethod,
                 TotalAmount = totalAmount - discountAmount,

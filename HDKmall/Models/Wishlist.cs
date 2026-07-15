@@ -25,6 +25,6 @@ namespace HDKmall.Models
         [ForeignKey("VersionId")]
         public virtual ProductVersion? ProductVersion { get; set; }
 
-        public DateTime AddedDate { get; set; } = DateTime.Now;
+        public DateTime AddedDate { get; set; } = HDKmall.Helpers.TimeHelper.GetVietnamTime();
     }
 }

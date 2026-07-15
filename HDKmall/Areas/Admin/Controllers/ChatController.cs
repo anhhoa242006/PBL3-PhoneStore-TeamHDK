@@ -48,7 +48,7 @@ namespace HDKmall.Areas.Admin.Controllers
                 SenderId = adminId,
                 Message = request.Message,
                 IsFromAdmin = true,
-                Timestamp = DateTime.Now
+                Timestamp = HDKmall.Helpers.TimeHelper.GetVietnamTime()
             };
 
             var result = await _chatService.SendMessageAsync(chatMsg);

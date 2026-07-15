@@ -15,9 +15,9 @@ namespace HDKmall.Models
 
         public string? BannerUrl { get; set; }
 
-        public DateTime StartDate { get; set; } = DateTime.Now;
+        public DateTime StartDate { get; set; } = HDKmall.Helpers.TimeHelper.GetVietnamTime();
 
-        public DateTime EndDate { get; set; } = DateTime.Now.AddDays(30);
+        public DateTime EndDate { get; set; } = HDKmall.Helpers.TimeHelper.GetVietnamTime().AddDays(30);
 
         public bool IsActive { get; set; } = true;
 

@@ -21,7 +21,7 @@ namespace HDKmall.BLL.Services
         {
             try
             {
-                message.Timestamp = DateTime.Now;
+                message.Timestamp = HDKmall.Helpers.TimeHelper.GetVietnamTime();
                 _context.ChatMessages.Add(message);
                 await _context.SaveChangesAsync();
                 return true;

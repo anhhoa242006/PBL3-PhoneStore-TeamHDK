@@ -13,7 +13,7 @@ namespace HDKmall.Models
         public User User { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = HDKmall.Helpers.TimeHelper.GetVietnamTime();
 
         public string? Tags { get; set; }        // JSON array string
          public string? ImageUrl { get; set; }    // Cloudinary URL

@@ -53,7 +53,7 @@ namespace HDKmall.BLL.Services
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 RoleId = _userRepository.GetCustomerRoleId(), // Lấy RoleID của Customer
                 IsActive = true,
-                CreatedAt = DateTime.Now
+                CreatedAt = HDKmall.Helpers.TimeHelper.GetVietnamTime()
             };
 
             _userRepository.AddUser(newUser);
@@ -243,7 +243,7 @@ namespace HDKmall.BLL.Services
 
             var token = Guid.NewGuid().ToString();
             user.ResetPasswordToken = token;
-            user.ResetPasswordTokenExpiry = DateTime.Now.AddMinutes(15);
+            user.ResetPasswordTokenExpiry = HDKmall.Helpers.TimeHelper.GetVietnamTime().AddMinutes(15);
             
             _userRepository.UpdateUser(user);
             _userRepository.SaveChanges();
@@ -254,7 +254,7 @@ namespace HDKmall.BLL.Services
         public bool ValidatePasswordResetToken(string email, string token)
         {
             var user = _userRepository.GetUserByEmail(email);
-            if (user == null || user.ResetPasswordToken != token || user.ResetPasswordTokenExpiry == null || user.ResetPasswordTokenExpiry < DateTime.Now)
+            if (user == null || user.ResetPasswordToken != token || user.ResetPasswordTokenExpiry == null || user.ResetPasswordTokenExpiry < HDKmall.Helpers.TimeHelper.GetVietnamTime())
             {
                 return false;
             }
@@ -264,7 +264,7 @@ namespace HDKmall.BLL.Services
         public bool ResetPassword(string email, string token, string newPassword)
         {
             var user = _userRepository.GetUserByEmail(email);
-            if (user == null || user.ResetPasswordToken != token || user.ResetPasswordTokenExpiry == null || user.ResetPasswordTokenExpiry < DateTime.Now)
+            if (user == null || user.ResetPasswordToken != token || user.ResetPasswordTokenExpiry == null || user.ResetPasswordTokenExpiry < HDKmall.Helpers.TimeHelper.GetVietnamTime())
             {
                 return false;
             }

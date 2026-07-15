@@ -12,6 +12,6 @@ namespace HDKmall.Models
         public string PhoneNumber { get; set; } = string.Empty;
         public string AddressLine { get; set; } = string.Empty;
         public bool IsDefault { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = HDKmall.Helpers.TimeHelper.GetVietnamTime();
     }
 }

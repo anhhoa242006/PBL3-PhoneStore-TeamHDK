@@ -36,7 +36,7 @@ namespace HDKmall.BLL.Services
                     UserId = userId,
                     ProductId = productId,
                     VersionId = versionId,
-                    AddedDate = DateTime.Now
+                    AddedDate = HDKmall.Helpers.TimeHelper.GetVietnamTime()
                 };
                 _context.Wishlists.Add(wishlist);
                 await _context.SaveChangesAsync();

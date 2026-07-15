@@ -41,7 +41,7 @@ namespace HDKmall.Controllers
                     .ToListAsync();
 
                 // Lấy các chương trình khuyến mãi đang diễn ra
-                var now = DateTime.Now;
+                var now = HDKmall.Helpers.TimeHelper.GetVietnamTime();
                 var promotions = await _context.Promotions
                     .Where(p => p.IsActive && p.StartDate <= now && p.EndDate >= now)
                     .ToListAsync();

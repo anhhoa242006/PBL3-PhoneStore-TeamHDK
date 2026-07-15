@@ -18,7 +18,7 @@ namespace HDKmall.BLL.Services
             var coupon = _couponRepository.GetByCode(code);
             if (coupon == null) return null;
 
-            if (coupon.ExpiryDate < DateTime.Now) return null;
+            if (coupon.ExpiryDate < HDKmall.Helpers.TimeHelper.GetVietnamTime()) return null;
             if (coupon.UsedCount >= coupon.UsageLimit) return null;
 
             return coupon;
@@ -30,7 +30,7 @@ namespace HDKmall.BLL.Services
             if (coupon == null) return false;
 
             if (coupon.UsedCount >= coupon.UsageLimit) return false;
-            if (coupon.ExpiryDate < DateTime.Now) return false;
+            if (coupon.ExpiryDate < HDKmall.Helpers.TimeHelper.GetVietnamTime()) return false;
 
             coupon.UsedCount++;
             _couponRepository.Update(coupon);

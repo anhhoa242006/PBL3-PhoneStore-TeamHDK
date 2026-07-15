@@ -42,7 +42,7 @@ namespace HDKmall.BLL.Services
                 UserId = userId,
                 Rating = Math.Min(5, Math.Max(1, vm.Rating)),
                 Comment = vm.Comment,
-                CreatedAt = DateTime.Now,
+                CreatedAt = HDKmall.Helpers.TimeHelper.GetVietnamTime(),
                 Status = "Approved"
             };
 
@@ -202,7 +202,7 @@ namespace HDKmall.BLL.Services
                 else
                 {
                     review.AdminReply = replyText;
-                    review.AdminReplyAt = DateTime.Now;
+                    review.AdminReplyAt = HDKmall.Helpers.TimeHelper.GetVietnamTime();
                 }
                 _reviewRepository.Update(review);
                 _reviewRepository.SaveChanges();

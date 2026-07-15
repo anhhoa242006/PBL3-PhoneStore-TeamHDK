@@ -253,7 +253,7 @@ namespace HDKmall.Controllers
             ViewBag.SelectedCategoryId = categoryId;
             
             // Get active promotion banner
-            var activePromotion = _context.Promotions.FirstOrDefault(p => p.IsActive && p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now);
+            var activePromotion = _context.Promotions.FirstOrDefault(p => p.IsActive && p.StartDate <= HDKmall.Helpers.TimeHelper.GetVietnamTime() && p.EndDate >= HDKmall.Helpers.TimeHelper.GetVietnamTime());
             ViewBag.ActivePromotion = activePromotion;
 
             if (User.Identity.IsAuthenticated)

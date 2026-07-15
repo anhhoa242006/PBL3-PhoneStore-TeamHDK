@@ -29,7 +29,7 @@ namespace HDKmall.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewBag.ActiveTab = "promotions";
-            return View(new Promotion { StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), IsActive = true });
+            return View(new Promotion { StartDate = HDKmall.Helpers.TimeHelper.GetVietnamTime(), EndDate = HDKmall.Helpers.TimeHelper.GetVietnamTime().AddDays(7), IsActive = true });
         }
 
         [HttpPost]

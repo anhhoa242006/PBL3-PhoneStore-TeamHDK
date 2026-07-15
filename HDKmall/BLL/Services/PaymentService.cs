@@ -25,7 +25,7 @@ namespace HDKmall.BLL.Services
                 PaymentMethod = paymentMethod,
                 Amount = amount,
                 Status = "Pending",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = HDKmall.Helpers.TimeHelper.GetVietnamTime()
             };
 
             _context.Payments.Add(payment);
@@ -56,7 +56,7 @@ namespace HDKmall.BLL.Services
             {
                 payment.Status = status;
                 payment.TransactionId = transactionId;
-                payment.UpdatedAt = DateTime.UtcNow;
+                payment.UpdatedAt = HDKmall.Helpers.TimeHelper.GetVietnamTime();
                 _context.SaveChanges();
             }
         }

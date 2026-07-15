@@ -139,7 +139,7 @@ namespace HDKmall.BLL.Services
                     OrderId = 0,
                     TransactionId = transId,
                     Amount = 0,
-                    TransactionDate = DateTime.Now
+                    TransactionDate = HDKmall.Helpers.TimeHelper.GetVietnamTime()
                 };
             }
 
@@ -162,7 +162,7 @@ namespace HDKmall.BLL.Services
                 OrderId = 0, // sẽ được parse từ OrderCode trong MoMoReturn
                 TransactionId = transId,
                 Amount = string.IsNullOrEmpty(amountStr) ? 0 : decimal.Parse(amountStr),
-                TransactionDate = DateTime.Now
+                TransactionDate = HDKmall.Helpers.TimeHelper.GetVietnamTime()
             };
         }
 
